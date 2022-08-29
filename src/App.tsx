@@ -10,28 +10,10 @@ import TickerRow from "./components/TickerRow";
 
 import useStream from "./useStream";
 
-const buttons = ["Futures", "U.S. Equities", "Crypto", "Forex"];
+const buttons = ["U.S. Equities", "Crypto", "Forex"];
 
 const today = djs().format("YYYY-MM-DD");
 const TopSymbols = {
-  Futures: {
-    query: gql`
-      query FutQuery($input: FuturesFilterInput) {
-        futuresContracts(input: $input) {
-          id
-          symbol
-          currentPrice
-          aggregates {
-            close
-          }
-          underlyingAsset {
-            name
-          }
-        }
-      }
-    `,
-    symbols: ["ZCU2", "HEQ2", "NQU2"],
-  },
   "U.S. Equities": {
     query: gql`
       query SecuritiesQuery($input: SecurityFilterInput) {
@@ -84,26 +66,13 @@ const TopSymbols = {
   },
 };
 
-const initialWatchlist = ["S:VTI", "C:BTC-USD", "F:NQU2"];
+const initialWatchlist = ["S:VTI", "C:BTC-USD"];
 
 const WatchlistQuery = gql`
   query AtAGlanceQuery(
     $sec: SecurityFilterInput
     $cry: CryptoTradingPairFilterInput
-    $fut: FuturesFilterInput
   ) {
-    futuresContracts(input: $fut) {
-      id
-      symbol
-      currentPrice
-      expirationDate
-      aggregates {
-        close
-      }
-      underlyingAsset {
-        name
-      }
-    }
     securities(input: $sec) {
       id
       symbol
@@ -146,11 +115,6 @@ function App() {
 
   const { loading: wlLoading, data: wlData } = useQuery(WatchlistQuery, {
     variables: {
-      fut: {
-        symbols: watchlist
-          .filter((w) => w.startsWith("F"))
-          .map((f) => f.split(":")[1]),
-      },
       cry: {
         symbols: watchlist
           .filter((w) => w.startsWith("C"))
@@ -166,7 +130,7 @@ function App() {
 
   const subscribedSymbols = watchlist
     .map((wl) => ({
-      t: wl.split(":")[0] === "F" ? "FUT" : wl.split(":")[0],
+      t: wl.split(":")[0],
       s: wl.split(":")[1],
     }))
     .concat(
@@ -175,7 +139,6 @@ function App() {
           "U.S. Equities": "S",
           Crypto: "C",
           Forex: "F",
-          Futures: "FUT",
         }[selectedButton];
         return { t, s };
       })
@@ -259,10 +222,6 @@ function App() {
                     const symbol = s.split(":")[1];
                     const delem = (() => {
                       switch (s[0]) {
-                        case "F":
-                          return wlData.futuresContracts.find(
-                            (f) => f.symbol === symbol
-                          );
                         case "S":
                           return wlData.securities.find(
                             (f) => f.symbol === symbol
@@ -273,6 +232,7 @@ function App() {
                           );
                       }
                     })();
+
                     const aggregates = [...delem.aggregates];
                     aggregates.reverse();
 
