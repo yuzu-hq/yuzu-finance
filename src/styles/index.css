@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply text-slate-700;
+  }
+
+  h1 {
+    @apply text-4xl font-bold font-dm-serif;
+  }
+
+  h2 {
+    @apply text-2xl font-bold font-dm-serif;
+  }
+
+  .navigation {
+    @apply flex flex-row justify-start border-b p-4;
+  }
+
+  input {
+    @apply outline-none;
+  }
+}
