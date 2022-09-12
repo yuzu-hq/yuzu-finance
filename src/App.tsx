@@ -69,7 +69,7 @@ function App() {
     .concat(
       TopSymbols[selectedButton]?.symbols.map((s) => {
         const t = {
-          USEquities: "S",
+          "U.S. Equities": "S",
           Crypto: "C",
           Forex: "F",
         }[selectedButton];
