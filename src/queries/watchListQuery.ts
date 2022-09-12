@@ -1,12 +1,11 @@
 import { gql } from "@apollo/client";
-import djs from "dayjs";
-
-const today = djs().format("YYYY-MM-DD");
 
 export const WatchListQuery = gql`
   query AtAGlanceQuery(
     $sec: SecurityFilterInput
+    $secAggregates: SecurityAggregateFilterInput
     $cry: CryptoTradingPairFilterInput
+    $cryAggregates: CryptoTradingPairAggregateFilterInput
   ) {
     securities(input: $sec) {
       id
@@ -15,7 +14,7 @@ export const WatchListQuery = gql`
       lastTrade {
         price
       }
-      aggregates(input: { limit: 2, before: "${today}" }) {
+      aggregates(input: $secAggregates) {
         time
         close
       }
@@ -26,7 +25,7 @@ export const WatchListQuery = gql`
       lastTrade {
         price
       }
-      aggregates(input: { limit: 1, before: "${today}" }) {
+      aggregates(input: $cryAggregates) {
         time
         close
       }

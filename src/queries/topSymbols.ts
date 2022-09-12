@@ -1,8 +1,4 @@
 import { gql } from "@apollo/client";
-import djs from "dayjs";
-
-const today = djs().format("YYYY-MM-DD");
-console.log("today = ", today);
 
 export const usEquities = gql`
   query SecuritiesQuery($input: SecurityFilterInput, $aggregatesInput: SecurityAggregateFilterInput) {

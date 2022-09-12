@@ -53,11 +53,13 @@ function App() {
           .filter((w) => w.startsWith("C"))
           .map((f) => f.split(":")[1]),
       },
+      cryAggregates: { limit: 2, before: `${today}` },
       sec: {
         symbols: watchList
           .filter((w) => w.startsWith("S"))
           .map((f) => f.split(":")[1]),
       },
+      secAggregates: { limit: 1, before: `${today}` }
     },
   });
 
