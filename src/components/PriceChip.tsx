@@ -7,10 +7,10 @@ type PriceChipProps = {
   name: string;
   price: string;
   lastPrice: string;
+  symbol: string;
 };
 
-export default function PriceChip(props: PriceChipProps): JSX.Element {
-  const { name, price, lastPrice } = props;
+export default function PriceChip({ name, price, lastPrice, symbol }: PriceChipProps): JSX.Element {
   const priceF = parseFloat(price);
   const lastPriceF = parseFloat(lastPrice);
 
@@ -32,7 +32,7 @@ export default function PriceChip(props: PriceChipProps): JSX.Element {
         {percentChange > 0 && <ArrowSmUpIcon className="text-white w-3/4" />}
       </div>
       <div className="flex flex-col justify-between items-start">
-        <p className="font-bold line-clamp-1 w-24 max-w-[8rem]">{name}</p>
+        <p className="font-bold line-clamp-1 w-24 max-w-[8rem]">{symbol}</p>
         <p>{currencyFormat.format(priceF)}</p>
       </div>
       <div className="flex flex-col justify-between items-start ml-2">
