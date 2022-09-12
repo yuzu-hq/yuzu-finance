@@ -13,7 +13,7 @@ import {
 
 const link = new HttpLink({
   // TODO: change me
-  uri: "http://localhost:4000/graphql",
+  uri: "https://graph.yuzu.dev/graphql", //"http://localhost:4000/graphql",
   headers: {
     Authorization: "Bearer demo",
   },

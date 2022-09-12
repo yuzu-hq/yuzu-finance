@@ -99,7 +99,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
             <>
               {data.futuresAssets?.map((c) => (
                 <div
-                  onClick={handleClick(`F:${c.contracts[0].symbol}`)}
+                  onClick={() => handleClick(`F:${c.contracts[0].symbol}`)}
                   className="flex flex-row justify-between items-center hover:bg-slate-100 hover:cursor-pointer p-4"
                   key={c.name}
                 >
