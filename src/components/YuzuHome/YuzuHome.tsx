@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { usEquities, forex, crypto, WatchListQuery } from "../../queries";
 import MarketHeader from "../MarketHeader/MarketHeader";
 import SearchBar from "../SearchBar";
@@ -106,12 +106,8 @@ const YuzuHome = () => {
             prices={prices}
             watchList={watchList}
           />
-          <Outlet />
         </div>
       </main>
-      <nav>
-        <Link to="/about">About</Link>
-      </nav>
     </>
   );
 };

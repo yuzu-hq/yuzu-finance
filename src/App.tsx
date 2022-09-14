@@ -1,14 +1,24 @@
-import { Routes, Route, Link, useParams } from "react-router-dom";
+import { Routes, Route, Link, useParams, Outlet } from "react-router-dom";
 import { YuzuHeader, YuzuHome } from "./components";
 
 function App() {
   return (
-    <div className="w-screen min-h-screen bg-slate-50 flex flex-col">
-      <YuzuHeader />
-      <Routes>
+    <Routes>
+      <Route path="/" element={<Layout />}>
         <Route path="finance" element={<YuzuHome />} />
         <Route path="quote/:tickerId" element={<Details />} />
-      </Routes>
+      </Route>
+    </Routes>
+  );
+}
+
+function Layout() {
+  return (
+    <div className="w-screen min-h-screen bg-slate-50 flex flex-col">
+      <YuzuHeader />
+      <div>
+        <Outlet />
+      </div>
     </div>
   );
 }
