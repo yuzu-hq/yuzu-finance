@@ -1,6 +1,7 @@
 import cx from "classnames";
 import djs from "dayjs";
 import { currencyFormat } from "../utilities";
+import { useNavigate } from "react-router-dom";
 
 type TickerRowProps = {
   symbol: string;
@@ -15,6 +16,7 @@ export default function TickerRow(props: TickerRowProps): JSX.Element {
   const pricef = parseFloat(price);
   const lastPricef = parseFloat(lastPrice);
   const pctChange = (pricef - lastPricef) / lastPricef;
+  let navigate = useNavigate();
 
   const date = props.exp && djs(props.exp).format("MMM YYYY");
 
@@ -29,7 +31,10 @@ export default function TickerRow(props: TickerRowProps): JSX.Element {
   });
 
   return (
-    <tr className="w-full border-b text-sm font-semibold hover:bg-slate-100 hover:cursor-pointer">
+    <tr
+      className="w-full border-b text-sm font-semibold hover:bg-slate-100 hover:cursor-pointer"
+      onClick={() => navigate(`/quote/${symbol}`)}
+    >
       <td className="items-center w-max py-3">
         <div className="bg-slate-300 w-fit px-2 py-1 text-slate-600 rounded text-sm">
           {symbol}

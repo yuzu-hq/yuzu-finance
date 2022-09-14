@@ -28,7 +28,6 @@ const WatchList = ({ wlLoading, wlData, prices, watchList }: WatchListProps) => 
             {wlData &&
               watchList.map((s) => {
                 const symbol = s.split(":")[1];
-                console.log("symbol = ", symbol)
                 const delem = (() => {
                   switch (s[0]) {
                     case "S":

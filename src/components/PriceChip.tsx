@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { useNavigate } from "react-router-dom";
 
 import { ArrowSmUpIcon, ArrowSmDownIcon } from "@heroicons/react/outline";
 import { currencyFormat } from "../utilities";
@@ -15,9 +16,13 @@ export default function PriceChip({ name, price, lastPrice, symbol }: PriceChipP
   const lastPriceF = parseFloat(lastPrice);
 
   const percentChange = (priceF - lastPriceF) / lastPriceF;
+  let navigate = useNavigate();
 
   return (
-    <div className="flex flex-row p-2 gap-x-3 border rounded-lg text-xs bg-white hover:cursor-pointer transition hover:bg-slate-100">
+    <div
+      className="flex flex-row p-2 gap-x-3 border rounded-lg text-xs bg-white hover:cursor-pointer transition hover:bg-slate-100"
+      onClick={() => navigate(`/quote/${symbol}`)}
+    >
       <div
         className={cx(
           "flex flex-row justify-center items-center h-8 aspect-square rounded-lg",
