@@ -12,7 +12,7 @@ type MarketHeaderProps = {
 
 const MarketHeader = ({ selectedButton, setSelectedButton, glLoading, glData, prices }: MarketHeaderProps) => {
   return (
-    <div className="w-full p-6 gap-y-4 flex flex-col bg-gray-400">
+    <div className="w-full p-6 gap-y-4 flex flex-col">
       <div className="flex flex-row items-center gap-x-3">
         <h3 className="font-semibold">At a glance:</h3>
         {buttons.map((button) => (

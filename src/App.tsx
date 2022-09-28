@@ -6,7 +6,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route path="finance" element={<YuzuHome />} />
-        <Route path="quote/:tickerId" element={<Details />} />
+        <Route path="finance/quote/:tickerId" element={<Details />} />
       </Route>
     </Routes>
   );

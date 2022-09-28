@@ -21,7 +21,7 @@ export default function PriceChip({ name, price, lastPrice, symbol }: PriceChipP
   return (
     <div
       className="flex flex-row p-2 gap-x-3 border rounded-lg text-xs bg-white hover:cursor-pointer transition hover:bg-slate-100"
-      onClick={() => navigate(`/quote/${symbol}`)}
+      onClick={() => navigate(`/finance/quote/${symbol}`)}
     >
       <div
         className={cx(
