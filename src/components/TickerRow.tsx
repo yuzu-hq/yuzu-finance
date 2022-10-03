@@ -33,7 +33,7 @@ export default function TickerRow(props: TickerRowProps): JSX.Element {
   return (
     <tr
       className="w-full border-b text-sm font-semibold hover:bg-slate-100 hover:cursor-pointer"
-      onClick={() => navigate(`/finance/quote/${symbol}`)}
+      onClick={() => navigate(`/${symbol}`)}
     >
       <td className="items-center w-max py-3">
         <div className="bg-slate-300 w-fit px-2 py-1 text-slate-600 rounded text-sm">

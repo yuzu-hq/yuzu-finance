@@ -11,7 +11,12 @@ type PriceChipProps = {
   symbol: string;
 };
 
-export default function PriceChip({ name, price, lastPrice, symbol }: PriceChipProps): JSX.Element {
+export default function PriceChip({
+  name,
+  price,
+  lastPrice,
+  symbol,
+}: PriceChipProps): JSX.Element {
   const priceF = parseFloat(price);
   const lastPriceF = parseFloat(lastPrice);
 
@@ -21,7 +26,7 @@ export default function PriceChip({ name, price, lastPrice, symbol }: PriceChipP
   return (
     <div
       className="flex flex-row p-2 gap-x-3 border rounded-lg text-xs bg-white hover:cursor-pointer transition hover:bg-slate-100"
-      onClick={() => navigate(`/finance/quote/${symbol}`)}
+      onClick={() => navigate(`/${symbol}`)}
     >
       <div
         className={cx(

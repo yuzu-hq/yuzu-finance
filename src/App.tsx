@@ -5,8 +5,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route path="finance" element={<YuzuHome />} />
-        <Route path="finance/quote/:tickerId" element={<Details />} />
+        <Route index element={<YuzuHome />} />
+        <Route path=":tickerId" element={<Details />} />
       </Route>
     </Routes>
   );

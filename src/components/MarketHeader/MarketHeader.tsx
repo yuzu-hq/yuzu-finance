@@ -10,7 +10,13 @@ type MarketHeaderProps = {
   prices: any;
 };
 
-const MarketHeader = ({ selectedButton, setSelectedButton, glLoading, glData, prices }: MarketHeaderProps) => {
+const MarketHeader = ({
+  selectedButton,
+  setSelectedButton,
+  glLoading,
+  glData,
+  prices,
+}: MarketHeaderProps) => {
   return (
     <div className="w-full p-6 gap-y-4 flex flex-col">
       <div className="flex flex-row items-center gap-x-3">
@@ -53,7 +59,7 @@ const MarketHeader = ({ selectedButton, setSelectedButton, glLoading, glData, pr
           ))}
       </div>
     </div>
-  )
+  );
 };
 
 export default MarketHeader;

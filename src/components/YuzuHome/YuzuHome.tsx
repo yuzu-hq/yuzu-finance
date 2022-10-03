@@ -34,9 +34,9 @@ const YuzuHome = () => {
   const [selectedButton, setSelectedButton] = useState(
     Object.keys(TopSymbols)[0]
   );
-  
+
   const [watchList, setWatchList] = useState(initialWatchList);
-  
+
   // @ts-ignore
   const { query, symbols, aggregates } = TopSymbols[selectedButton];
   const { loading: glLoading, data: glData } = useQuery(query, {
@@ -45,7 +45,7 @@ const YuzuHome = () => {
       aggregatesInput: aggregates,
     },
   });
-  
+
   const subscribedSymbols = watchList
     .map((wl) => ({
       t: wl.split(":")[0],
@@ -59,12 +59,11 @@ const YuzuHome = () => {
           Forex: "F",
         }[selectedButton];
         return { t, s };
-      }
-    )
-  );
-  
+      })
+    );
+
   const { pending, prices } = useStream(subscribedSymbols);
-  
+
   const { loading: wlLoading, data: wlData } = useQuery(WatchListQuery, {
     variables: {
       cry: {
@@ -78,14 +77,14 @@ const YuzuHome = () => {
           .filter((w) => w.startsWith("S"))
           .map((f) => f.split(":")[1]),
       },
-      secAggregates: { limit: 1, before: `${today}` }
+      secAggregates: { limit: 1, before: `${today}` },
     },
   });
-  
+
   const handleSymbolSelected = (symbol: string) => {
     setWatchList((wl) => [symbol, ...wl]);
   };
-  
+
   return (
     <>
       <main>
