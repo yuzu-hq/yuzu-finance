@@ -7,9 +7,14 @@ type WatchListProps = {
   wlData: any;
   prices: any;
   watchList: string[];
-}
+};
 
-const WatchList = ({ wlLoading, wlData, prices, watchList }: WatchListProps) => {
+const WatchList = ({
+  wlLoading,
+  wlData,
+  prices,
+  watchList,
+}: WatchListProps) => {
   return (
     <div className="flex flex-row py-8 px-12 w-full">
       <div className="flex flex-col grow">
@@ -31,9 +36,7 @@ const WatchList = ({ wlLoading, wlData, prices, watchList }: WatchListProps) => 
                 const delem = (() => {
                   switch (s[0]) {
                     case "S":
-                      return wlData.securities.find(
-                        (f) => f.symbol === symbol
-                      );
+                      return wlData.securities.find((f) => f.symbol === symbol);
                     case "C":
                       return wlData.cryptoTradingPairs.find(
                         (f) => f.symbol === symbol
@@ -61,9 +64,7 @@ const WatchList = ({ wlLoading, wlData, prices, watchList }: WatchListProps) => 
                     key={delem.symbol}
                     symbol={delem.symbol}
                     name={
-                      delem.name ||
-                      delem.underlyingAsset?.name ||
-                      delem.symbol
+                      delem.name || delem.underlyingAsset?.name || delem.symbol
                     }
                     price={
                       prices[delem.symbol]?.close ||
@@ -80,7 +81,7 @@ const WatchList = ({ wlLoading, wlData, prices, watchList }: WatchListProps) => 
         </table>
       </div>
     </div>
-  )
+  );
 };
 
 export default WatchList;
