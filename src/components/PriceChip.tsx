@@ -1,7 +1,11 @@
 import cx from "classnames";
 import { useNavigate } from "react-router-dom";
 
-import { ArrowSmUpIcon, ArrowSmDownIcon } from "@heroicons/react/outline";
+import {
+  ArrowSmUpIcon,
+  ArrowSmDownIcon,
+  MinusIcon,
+} from "@heroicons/react/outline";
 import { currencyFormat } from "../utilities";
 
 type PriceChipProps = {
@@ -40,6 +44,7 @@ export default function PriceChip({
       >
         {percentChange < 0 && <ArrowSmDownIcon className="text-white w-3/4" />}
         {percentChange > 0 && <ArrowSmUpIcon className="text-white w-3/4" />}
+        {percentChange === 0 && <MinusIcon className="text-slate-700 w-1/2" />}
       </div>
       <div className="flex flex-col justify-between items-start">
         <p className="font-bold line-clamp-1 w-24 max-w-[8rem]">{symbol}</p>
