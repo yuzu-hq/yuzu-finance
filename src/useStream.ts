@@ -14,9 +14,7 @@ export type SymbolType = "C" | "S" | "FUT";
 type Stream = { t: SymbolType; s: string };
 
 export default function useStream(streams: Stream[]): UseStreamResult {
-  const symbols = streams
-    .filter(({ t }) => t !== "FUT")
-    .map(({ t, s }) => [t, "1S", s].join(":"));
+  const symbols = streams.map(({ t, s }) => [t, "1S", s].join(":"));
 
   const url = `https://sse.yuzu.dev/sse?token=demo&streams=${symbols.join(
     ","
