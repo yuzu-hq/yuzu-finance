@@ -1,12 +1,11 @@
-import { Link, Outlet } from "react-router-dom";
-import { usEquities, forex, crypto, WatchListQuery } from "../../queries";
-import MarketHeader from "../MarketHeader/MarketHeader";
-import SearchBar from "../SearchBar";
-import WatchList from "../WatchList/WatchList";
 import djs from "dayjs";
+
+import { Link, Outlet } from "react-router-dom";
+import { usEquities, forex, crypto, WatchListQuery } from "../queries";
+import { MarketHeader, SearchBar, WatchList } from "../components";
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import useStream from "../../useStream";
+import useStream from "../useStream";
 
 const today = djs().format("YYYY-MM-DD");
 
