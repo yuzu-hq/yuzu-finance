@@ -9,7 +9,7 @@ type UseStreamResult = {
 };
 
 export type StreamType = "1S";
-export type SymbolType = "C" | "S" | "FUT";
+export type SymbolType = "C" | "S" | "F";
 
 type Stream = { t: SymbolType; s: string };
 
