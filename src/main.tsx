@@ -5,22 +5,17 @@ import App from "./App";
 
 import "./styles/index.css";
 
-import {
-  ApolloProvider,
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-} from "@apollo/client";
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+import { BatchHttpLink } from "@apollo/client/link/batch-http";
 
-const link = new HttpLink({
-  // TODO: change me
-  uri: "https://graph.yuzu.dev/graphql", //"http://localhost:4000/graphql",
+const link = new BatchHttpLink({
+  uri: "https://graph.yuzu.dev/graphql",
   headers: {
     Authorization: "Bearer demo",
   },
 });
 
-export default function createClient(): ApolloClient {
+export default function createClient(): ApolloClient<unknown> {
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: link,
