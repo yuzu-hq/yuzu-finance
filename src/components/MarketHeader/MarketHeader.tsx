@@ -58,8 +58,6 @@ const MarketHeader = () => {
     },
   });
 
-  console.log({ glData });
-
   return (
     <div className="w-full p-6 gap-y-4 flex flex-col">
       <div className="flex flex-row items-center gap-x-3">
