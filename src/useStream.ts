@@ -13,12 +13,6 @@ export type SymbolType = "C" | "S" | "FUT";
 
 type Stream = { t: SymbolType; s: string };
 
-const initialPrice = {
-  HEQ2: 118.4,
-  ZCU2: 609.4,
-  NQU2: 12565.0,
-};
-
 export default function useStream(streams: Stream[]): UseStreamResult {
   const symbols = streams
     .filter(({ t }) => t !== "FUT")
@@ -41,26 +35,7 @@ export default function useStream(streams: Stream[]): UseStreamResult {
       }));
     });
 
-    const timer = setInterval(() => {
-      streams
-        .filter(({ t }) => t === "FUT")
-        .map(({ s }) => s)
-        .forEach((s) => {
-          const rand =
-            1 + (Math.random() / 120) * (Math.round(Math.random()) * 2 - 1);
-
-          setPrices((prev) => ({
-            ...prev,
-            [s]: {
-              stream: `FUT:1S:${s}`,
-              close: (prev[s]?.close || initialPrice[s]) * rand,
-            },
-          }));
-        });
-    }, 3000);
-
     return () => {
-      clearInterval(timer);
       stream.close();
       setPrices({});
     };
