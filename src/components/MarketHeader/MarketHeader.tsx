@@ -1,16 +1,63 @@
+import djs from "dayjs";
+import { useState } from "react";
+import { useQuery } from "@apollo/client";
+
+import useStream, { SymbolType } from "../../useStream";
+
 import { ChipButton, PriceChip } from "..";
+import { usEquities, forex, crypto } from "../../queries";
 
 const buttons = ["U.S. Equities", "Crypto", "Forex"];
 
 type MarketHeaderProps = {
-  setSelectedButton: (value: string) => void;
-  selectedButton: string;
-  glLoading: boolean;
-  glData: any;
   prices: any;
 };
 
-const MarketHeader = ({ selectedButton, setSelectedButton, glLoading, glData, prices }: MarketHeaderProps) => {
+const today = djs().format("YYYY-MM-DD");
+const TopSymbols = {
+  "U.S. Equities": {
+    query: usEquities,
+    symbols: ["SPY", "VTI", "SOND"],
+    aggregates: { limit: 1, before: `${today}` },
+    streamType: "S" as SymbolType,
+  },
+  Crypto: {
+    query: crypto,
+    symbols: ["BTC-USD", "ETH-USD", "SOL-USD", "DOGE-USD"],
+    aggregates: { limit: 1, before: `${today}` },
+    streamType: "C" as SymbolType,
+  },
+  Forex: {
+    query: forex,
+    symbols: ["EUR-USD", "GBP-USD", "JPY-USD", "RUB-USD"],
+    aggregates: { limit: 2, before: `${today}` },
+    streamType: "F" as SymbolType,
+  },
+};
+
+type EquityType = keyof typeof TopSymbols;
+
+const MarketHeader = () => {
+  const [selectedButton, setSelectedButton] = useState<EquityType>(
+    Object.keys(TopSymbols)[0] as keyof typeof TopSymbols
+  );
+
+  const { prices } = useStream(
+    TopSymbols[selectedButton].symbols.map((s) => ({
+      t: TopSymbols[selectedButton].streamType,
+      s,
+    }))
+  );
+
+  const { query, symbols, aggregates } =
+    TopSymbols[selectedButton as EquityType];
+  const { loading: glLoading, data: glData } = useQuery(query, {
+    variables: {
+      input: { symbols },
+      aggregatesInput: aggregates,
+    },
+  });
+
   return (
     <div className="w-full p-6 gap-y-4 flex flex-col">
       <div className="flex flex-row items-center gap-x-3">
@@ -20,7 +67,7 @@ const MarketHeader = ({ selectedButton, setSelectedButton, glLoading, glData, pr
             key={button}
             name={button}
             selected={selectedButton === button}
-            onSelected={() => setSelectedButton(button)}
+            onSelected={() => setSelectedButton(button as EquityType)}
           />
         ))}
       </div>
@@ -53,7 +100,7 @@ const MarketHeader = ({ selectedButton, setSelectedButton, glLoading, glData, pr
           ))}
       </div>
     </div>
-  )
+  );
 };
 
 export default MarketHeader;
