@@ -9,12 +9,18 @@ export const usEquities = gql`
       id
       symbol
       name
+      issuer {
+        name
+      }
       lastTrade {
         price
+        time
       }
       aggregates(input: $aggregatesInput) {
         time
         close
+        high
+        low
       }
     }
   }

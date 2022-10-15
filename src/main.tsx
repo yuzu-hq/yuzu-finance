@@ -5,10 +5,10 @@ import App from "./App";
 
 import "./styles/index.css";
 
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
-import { BatchHttpLink } from "@apollo/client/link/batch-http";
+import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+//import { BatchHttpLink } from "@apollo/client/link/batch-http";
 
-const link = new BatchHttpLink({
+const link = new HttpLink({
   uri: "https://graph.yuzu.dev/graphql",
   headers: {
     Authorization: "Bearer demo",

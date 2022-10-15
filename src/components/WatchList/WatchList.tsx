@@ -16,7 +16,7 @@ const WatchList = ({
   watchList,
 }: WatchListProps) => {
   return (
-    <div className="flex flex-row py-8 px-12 w-full">
+    <div className="flex flex-row py-8 w-full">
       <div className="flex flex-col grow">
         <h2 className="mb-2">Your watchlist</h2>
         <hr />
