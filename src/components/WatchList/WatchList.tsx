@@ -32,6 +32,7 @@ const WatchList = ({
               ))}
             {wlData &&
               watchList.map((s) => {
+                const streamType = s.split(":")[0]
                 const symbol = s.split(":")[1];
                 const delem = (() => {
                   switch (s[0]) {
@@ -62,6 +63,7 @@ const WatchList = ({
                 return (
                   <TickerRow
                     key={delem.symbol}
+                    streamType={streamType}
                     symbol={delem.symbol}
                     name={
                       delem.name || delem.underlyingAsset?.name || delem.symbol

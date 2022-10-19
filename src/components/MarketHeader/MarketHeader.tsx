@@ -71,7 +71,9 @@ const MarketHeader = () => {
             key={button}
             name={button}
             selected={selectedButton === button}
-            onSelected={() => setSelectedButton(button as EquityType)}
+            onSelected={() => {
+              setSelectedButton(button as EquityType);
+            }}
           />
         ))}
       </div>
