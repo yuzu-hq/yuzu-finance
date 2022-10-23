@@ -1,17 +1,55 @@
 import React, { useState } from 'react';
+import cx from "classnames";
 
-const RadioTimePeriodFilter = ({ timePeriod, onTimePeriodChange }: { timePeriod: number, onTimePeriodChange: (value: number) => void }) => {
-  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
-    onTimePeriodChange(parseInt(event.target.value))
-  }
+export interface TimePeriodFilterProps {
+  setTimePeriod: (value: number) => void;
+  setAggPeriod: (value: string) => void;
+  setAggLimit: (value: number) => void;
+  timePeriod: number;
+}
+
+const TimePeriodFilter: React.FC<TimePeriodFilterProps> = ({ setAggPeriod, setAggLimit, timePeriod, setTimePeriod }) => {
+  console.log(timePeriod)
   return (
-    <div className='flex gap-x-2' onChange={onChangeHandler}>  
-      <input type='radio' checked={timePeriod === 1} value={1} name='1D' /> 1D
-      <input type='radio' checked={timePeriod === 5} value={5} name='5D' /> 5D
-      <input type='radio' checked={timePeriod === 30} value={30} name='1M' /> 1M
+    <div className='pl-3 flex gap-x-3'>  
+      <button 
+        className={cx({
+          'underline text-blue-800': timePeriod === 1
+        })} 
+        onClick={() => {
+          setTimePeriod(1);
+          setAggLimit(500);
+          setAggPeriod("MINUTE");
+        }}
+      >
+        1D
+      </button>
+      <button 
+        className={cx({
+          'underline text-blue-800': timePeriod === 5
+        })} 
+        onClick={() => {
+          setTimePeriod(5);
+          setAggLimit(60)
+          setAggPeriod("HOUR")
+        }}
+      >
+        5D
+      </button>
+      <button 
+        className={cx({
+          'underline text-blue-800': timePeriod === 30
+        })} 
+        onClick={() => {
+          setTimePeriod(30);
+          setAggLimit(30)
+          setAggPeriod("DAY")
+        }}
+      >
+        1M
+      </button>
     </div>
   )
 };
 
-export default RadioTimePeriodFilter;
+export default TimePeriodFilter;
