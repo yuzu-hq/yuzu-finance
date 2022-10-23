@@ -13,7 +13,7 @@ type PriceChipProps = {
   price: string;
   lastPrice: string;
   symbol: string;
-  streamType: "S" | "C" | "F"
+  streamType: "S" | "C" | "F";
 };
 
 export default function PriceChip({
@@ -21,7 +21,7 @@ export default function PriceChip({
   price,
   lastPrice,
   symbol,
-  streamType
+  streamType,
 }: PriceChipProps): JSX.Element {
   const priceF = parseFloat(price);
   const lastPriceF = parseFloat(lastPrice);

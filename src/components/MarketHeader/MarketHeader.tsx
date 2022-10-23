@@ -42,7 +42,7 @@ const MarketHeader = () => {
     Object.keys(TopSymbols)[0] as keyof typeof TopSymbols
   );
 
-  const [streamType, setStreamType] = useState<SymbolType>(
+  const [streamType, setStreamType] = useState(
     TopSymbols[selectedButton].streamType
   );
 
@@ -74,6 +74,7 @@ const MarketHeader = () => {
             onSelected={() => {
               setSelectedButton(button as EquityType);
             }}
+            setStreamType={setStreamType}
           />
         ))}
       </div>
