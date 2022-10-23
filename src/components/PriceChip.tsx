@@ -50,7 +50,7 @@ export default function PriceChip({
       </div>
       <div className="flex flex-col justify-between items-start">
         <p className="font-bold line-clamp-1 w-24 max-w-[8rem]">{symbol}</p>
-        <p>{currencyFormat.format(priceF)}</p>
+        <p>{streamType === "F" ? priceF : currencyFormat.format(priceF)}</p>
       </div>
       <div className={cx(
           "flex flex-col justify-between items-start ml-2",

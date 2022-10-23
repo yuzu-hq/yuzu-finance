@@ -81,7 +81,7 @@ export default function Details() {
               </div>
               <AreaChart 
                 data={graphData} discrete={true} prefix="$" thousands="," round={2} zeros={false}
-                min={null} max={null} 
+                min={null} max={null}
               />
             </div>
           </main>
