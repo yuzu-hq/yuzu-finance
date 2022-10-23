@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { LineChart } from 'react-chartkick';
+import { LineChart, AreaChart } from 'react-chartkick';
 import 'chartkick/chart.js'
 import djs from "dayjs";
 import { currencyFormat, fetchGraphData } from "../utilities";
@@ -33,7 +33,6 @@ export default function Details() {
     )
   }
 
-  console.log("data, ", data)
   const USSecurities = data?.securities[0];
   const { 
     lastTrade: { price: lastPrice, time: lastTime },
@@ -65,9 +64,9 @@ export default function Details() {
           <div className="mb-2">
             <TimePeriodFilter setAggPeriod={setAggPeriod} setAggLimit={setAggLimit} setTimePeriod={setTimePeriod} timePeriod={timePeriod} />
           </div>
-          <LineChart 
+          <AreaChart 
             data={graphData} discrete={true} prefix="$" thousands="," round={2} zeros={false}
-            min={null} max={null}
+            min={null} max={null} 
           />
         </div>
       </main>
