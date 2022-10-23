@@ -50,7 +50,7 @@ export default function Details() {
     const USSecurities = data?.securities[0];
     const { 
       lastTrade: { price: lastPrice, time: lastTime },
-      issuer: { name: issuerName }
+      name: stockName
     } = USSecurities;
     graphData = USSecurities.aggregates.map((agg, i) => {
       let time = djs(agg.time).format('MMM D, YYYY');
@@ -70,7 +70,7 @@ export default function Details() {
           <main>
             <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
               <div className="flex gap-x-2 justify-between">
-                {issuerName}
+                {stockName}
               </div>
             </div>
             <div className="mt-4">
