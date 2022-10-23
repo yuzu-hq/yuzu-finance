@@ -27,19 +27,7 @@ export default function Details() {
   const [aggPeriod, setAggPeriod] = useState<string>("DAY");
   const [timePeriod, setTimePeriod] = useState<number>(30);
 
-
-  // const { loading, data} = useQuery(usEquities, {
-  //   variables: {
-  //     input: { symbols: [equitySymbol] },
-  //     aggregatesInput: {
-  //       period: aggPeriod,
-  //       limit: aggLimit
-  //     },
-  //   },
-  // });
-
   let graphData;
-
 
   if (streamType === "S") {
     const { loading, data} = useQuery(usEquities, {
@@ -62,7 +50,7 @@ export default function Details() {
     const USSecurities = data?.securities[0];
     const { 
       lastTrade: { price: lastPrice, time: lastTime },
-      issuer: { id: issuerName }
+      issuer: { name: issuerName }
     } = USSecurities;
     graphData = USSecurities.aggregates.map((agg, i) => {
       let time = djs(agg.time).format('MMM D, YYYY');
