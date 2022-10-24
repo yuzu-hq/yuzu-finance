@@ -13,16 +13,7 @@ export default function Details() {
   let params = useParams();
   const equitySymbol = params.tickerId;
   const streamType = params.streamType;
-  let query = usEquities;
-  
-  switch (streamType) {
-    case "S":
-      query = usEquities;
-    case "C":
-      query = crypto;
-    case "F":
-      query = forex;
-  }
+
   const [aggLimit, setAggLimit] = useState<number>(30);
   const [aggPeriod, setAggPeriod] = useState<string>("DAY");
   const [timePeriod, setTimePeriod] = useState<number>(30);
@@ -183,7 +174,7 @@ export default function Details() {
       if (aggPeriod === "MINUTE") {
         time =  djs(agg.time).format('HH:mm');
       }
-      const close = agg.close;
+      const close = (parseFloat(agg.close)).toFixed(4);
       return [time, close];
     }) || [];
     console.log("graph", graphData)
