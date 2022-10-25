@@ -1,7 +1,5 @@
 import TickerRow from "../TickerRow";
 
-const initialWatchList = ["S:VTI", "S:SPY", "C:BTC-USD"];
-
 type WatchListProps = {
   wlLoading: boolean;
   wlData: any;

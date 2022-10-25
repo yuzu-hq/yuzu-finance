@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-type Side = { price: number; quantity: number };
 type Agg = { symbol: string; close: number };
 
 type UseStreamResult = {

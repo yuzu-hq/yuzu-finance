@@ -27,7 +27,7 @@ export default function ChipButton({
 }: ChipButtonProps): JSX.Element {
   return (
     <div
-      onClick={() => {
+      onClick={(): void => {
         !selected && onSelected();
         getStreamType(name, setStreamType)
       }}

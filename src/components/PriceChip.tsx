@@ -17,7 +17,6 @@ type PriceChipProps = {
 };
 
 export default function PriceChip({
-  name,
   price,
   lastPrice,
   symbol,

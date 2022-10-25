@@ -1,25 +1,23 @@
 import djs from "dayjs";
 
-import { Link, Outlet } from "react-router-dom";
-import { usEquities, forex, crypto, WatchListQuery } from "../queries";
-import { MarketHeader, SearchBar, WatchList } from "../components";
+import { WatchListQuery } from "../queries";
+import { SearchBar, WatchList } from "../components";
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import useStream from "../useStream";
+import useStream, { SymbolType } from "../useStream";
 
 const initialWatchList = ["S:VTI", "S:SPY", "C:BTC-USD"];
 
 const today = djs().format("YYYY-MM-DD");
-const YuzuHome = () => {
+const YuzuHome = (): JSX.Element => {
   const [watchList, setWatchList] = useState(initialWatchList);
 
-  // @ts-ignore
   const subscribedSymbols = watchList.map((wl) => ({
-    t: wl.split(":")[0],
+    t: wl.split(":")[0] as SymbolType,
     s: wl.split(":")[1],
   }));
 
-  const { pending, prices } = useStream(subscribedSymbols);
+  const { prices } = useStream(subscribedSymbols);
 
   const { loading: wlLoading, data: wlData } = useQuery(WatchListQuery, {
     variables: {
@@ -38,7 +36,7 @@ const YuzuHome = () => {
     },
   });
 
-  const handleSymbolSelected = (symbol: string) => {
+  const handleSymbolSelected = (symbol: string): void => {
     setWatchList((wl) => [symbol, ...wl]);
   };
 

@@ -9,10 +9,6 @@ import { usEquities, forex, crypto } from "../../queries";
 
 const buttons = ["U.S. Equities", "Crypto", "Forex"];
 
-type MarketHeaderProps = {
-  prices: any;
-};
-
 const today = djs().format("YYYY-MM-DD");
 const TopSymbols = {
   "U.S. Equities": {
@@ -37,7 +33,7 @@ const TopSymbols = {
 
 type EquityType = keyof typeof TopSymbols;
 
-const MarketHeader = () => {
+const MarketHeader = (): JSX.Element => {
   const [selectedButton, setSelectedButton] = useState<EquityType>(
     Object.keys(TopSymbols)[0] as keyof typeof TopSymbols
   );
@@ -71,7 +67,7 @@ const MarketHeader = () => {
             key={button}
             name={button}
             selected={selectedButton === button}
-            onSelected={() => {
+            onSelected={(): void => {
               setSelectedButton(button as EquityType);
             }}
             setStreamType={setStreamType}

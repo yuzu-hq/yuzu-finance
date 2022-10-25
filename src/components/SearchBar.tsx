@@ -48,7 +48,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
   const [active, setActive] = useState(false);
   const [query, setQuery] = useState("");
 
-  const { data, loading } = useQuery(SearchQuery, {
+  const { data } = useQuery(SearchQuery, {
     variables: {
       query,
     },
