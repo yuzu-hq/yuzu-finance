@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cx from "classnames";
 
 export interface TimePeriodFilterProps {
   setTimePeriod: (value: number) => void;
-  setAggPeriod: (value: string) => void;
+  setAggPeriod: (value: "DAY" | "HOUR" | "MINUTE") => void;
   setAggLimit: (value: number) => void;
   timePeriod: number;
 }

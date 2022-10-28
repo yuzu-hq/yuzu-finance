@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import { LineChart, AreaChart } from 'react-chartkick';
+import { AreaChart } from 'react-chartkick';
 import 'chartkick/chart.js'
 import djs from "dayjs";
-import { currencyFormat, fetchGraphData } from "../utilities";
+import { currencyFormat } from "../utilities";
 import 'chartkick/chart.js'
 import { useQuery } from "@apollo/client";
 import { usEquities, forex, crypto } from "../queries";
@@ -15,7 +15,7 @@ export default function Details() {
   const streamType = params.streamType;
 
   const [aggLimit, setAggLimit] = useState<number>(30);
-  const [aggPeriod, setAggPeriod] = useState<string>("DAY");
+  const [aggPeriod, setAggPeriod] = useState<"DAY" | "HOUR" | "MINUTE">("DAY");
   const [timePeriod, setTimePeriod] = useState<number>(30);
 
   let graphData;
