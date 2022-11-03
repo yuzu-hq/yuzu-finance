@@ -9,7 +9,6 @@ export interface TimePeriodFilterProps {
 }
 
 const TimePeriodFilter: React.FC<TimePeriodFilterProps> = ({ setAggPeriod, setAggLimit, timePeriod, setTimePeriod }) => {
-  console.log(timePeriod)
   return (
     <div className='pl-3 flex gap-x-3'>  
       <button 

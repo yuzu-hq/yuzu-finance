@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { AreaChart } from 'react-chartkick';
-import 'chartkick/chart.js'
 import djs from "dayjs";
 import { currencyFormat } from "../utilities";
 import 'chartkick/chart.js'
@@ -177,7 +176,6 @@ export default function Details() {
       const close = (parseFloat(agg.close)).toFixed(4);
       return [time, close];
     }) || [];
-    console.log("graph", graphData)
 
     return (
       graphData && (
