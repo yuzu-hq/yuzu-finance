@@ -16,7 +16,7 @@
   }
 
   .navigation {
-    @apply flex flex-row justify-start border-b p-4;
+    @apply flex flex-row justify-start border-b py-4 px-6;
   }
 
   input {

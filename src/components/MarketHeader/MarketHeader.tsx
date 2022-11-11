@@ -17,7 +17,7 @@ const today = djs().format("YYYY-MM-DD");
 const TopSymbols = {
   "U.S. Equities": {
     query: usEquities,
-    symbols: ["SPY", "VTI", "SOND"],
+    symbols: ["SPY", "VTI", "WMT"],
     aggregates: { limit: 1, before: `${today}` },
     streamType: "S" as SymbolType,
   },
@@ -40,6 +40,10 @@ type EquityType = keyof typeof TopSymbols;
 const MarketHeader = () => {
   const [selectedButton, setSelectedButton] = useState<EquityType>(
     Object.keys(TopSymbols)[0] as keyof typeof TopSymbols
+  );
+
+  const [streamType, setStreamType] = useState(
+    TopSymbols[selectedButton].streamType
   );
 
   const { prices } = useStream(
@@ -67,7 +71,10 @@ const MarketHeader = () => {
             key={button}
             name={button}
             selected={selectedButton === button}
-            onSelected={() => setSelectedButton(button as EquityType)}
+            onSelected={() => {
+              setSelectedButton(button as EquityType);
+            }}
+            setStreamType={setStreamType}
           />
         ))}
       </div>
@@ -95,6 +102,7 @@ const MarketHeader = () => {
                   sec.currentPrice
                 }
                 lastPrice={sec.aggregates[0].close}
+                streamType={streamType}
               />
             </div>
           ))}

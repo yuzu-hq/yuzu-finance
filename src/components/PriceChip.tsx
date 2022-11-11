@@ -13,6 +13,7 @@ type PriceChipProps = {
   price: string;
   lastPrice: string;
   symbol: string;
+  streamType: "S" | "C" | "F";
 };
 
 export default function PriceChip({
@@ -20,6 +21,7 @@ export default function PriceChip({
   price,
   lastPrice,
   symbol,
+  streamType,
 }: PriceChipProps): JSX.Element {
   const priceF = parseFloat(price);
   const lastPriceF = parseFloat(lastPrice);
@@ -30,7 +32,7 @@ export default function PriceChip({
   return (
     <div
       className="flex flex-row p-2 gap-x-3 border rounded-lg text-xs bg-white hover:cursor-pointer transition hover:bg-slate-100"
-      onClick={() => navigate(`/${symbol}`)}
+      onClick={() => navigate(`/${streamType}:${symbol}`)}
     >
       <div
         className={cx(
@@ -48,10 +50,17 @@ export default function PriceChip({
       </div>
       <div className="flex flex-col justify-between items-start">
         <p className="font-bold line-clamp-1 w-24 max-w-[8rem]">{symbol}</p>
-        <p>{currencyFormat.format(priceF)}</p>
+        <p>{streamType === "F" ? priceF : currencyFormat.format(priceF)}</p>
       </div>
-      <div className="flex flex-col justify-between items-start ml-2">
-        <p className="font-bold">{(percentChange * 100).toFixed(2)}%</p>
+      <div className={cx(
+          "flex flex-col justify-between items-start ml-2",
+          {
+            "text-emerald-600": percentChange > 0,
+            "text-red-600": percentChange < 0
+          }
+        )}
+      >
+        <p className="font-bold">{percentChange > 0 && "+"}{(percentChange * 100).toFixed(2)}%</p>
         <p>{currencyFormat.format(priceF - lastPriceF)}</p>
       </div>
     </div>

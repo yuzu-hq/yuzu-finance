@@ -9,10 +9,11 @@ type TickerRowProps = {
   exp?: string;
   price: string;
   lastPrice: string;
+  streamType: string;
 };
 
 export default function TickerRow(props: TickerRowProps): JSX.Element {
-  const { symbol, name, price, lastPrice } = props;
+  const { symbol, name, price, lastPrice, streamType } = props;
   const pricef = parseFloat(price);
   const lastPricef = parseFloat(lastPrice);
   const pctChange = (pricef - lastPricef) / lastPricef;
@@ -33,7 +34,7 @@ export default function TickerRow(props: TickerRowProps): JSX.Element {
   return (
     <tr
       className="w-full border-b text-sm font-semibold hover:bg-slate-100 hover:cursor-pointer"
-      onClick={() => navigate(`/${symbol}`)}
+      onClick={() => navigate(`${streamType}:${symbol}`)}
     >
       <td className="items-center w-max py-3">
         <div className="bg-slate-300 w-fit px-2 py-1 text-slate-600 rounded text-sm">

@@ -6,7 +6,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Root />}>
         <Route index element={<Home />} />
-        <Route path=":tickerId" element={<Details />} />
+        <Route path=":streamType::tickerId" element={<Details />} />
       </Route>
     </Routes>
   );

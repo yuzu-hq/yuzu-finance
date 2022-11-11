@@ -16,7 +16,7 @@ const WatchList = ({
   watchList,
 }: WatchListProps) => {
   return (
-    <div className="flex flex-row py-8 px-12 w-full">
+    <div className="flex flex-row py-8 w-full">
       <div className="flex flex-col grow">
         <h2 className="mb-2">Your watchlist</h2>
         <hr />
@@ -32,6 +32,7 @@ const WatchList = ({
               ))}
             {wlData &&
               watchList.map((s) => {
+                const streamType = s.split(":")[0]
                 const symbol = s.split(":")[1];
                 const delem = (() => {
                   switch (s[0]) {
@@ -62,6 +63,7 @@ const WatchList = ({
                 return (
                   <TickerRow
                     key={delem.symbol}
+                    streamType={streamType}
                     symbol={delem.symbol}
                     name={
                       delem.name || delem.underlyingAsset?.name || delem.symbol
