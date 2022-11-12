@@ -1,11 +1,11 @@
-import djs from "dayjs";
-import { useState } from "react";
 import { useQuery } from "@apollo/client";
 
-import useStream, { SymbolType } from "../../useStream";
+import djs from "dayjs";
+import { useState } from "react";
 
 import { ChipButton, PriceChip } from "..";
-import { usEquities, forex, crypto } from "../../queries";
+import { crypto, forex, usEquities } from "../../queries";
+import useStream, { SymbolType } from "../../useStream";
 
 const buttons = ["U.S. Equities", "Crypto", "Forex"];
 
@@ -38,9 +38,7 @@ const MarketHeader = (): JSX.Element => {
     Object.keys(TopSymbols)[0] as keyof typeof TopSymbols
   );
 
-  const [streamType, setStreamType] = useState(
-    TopSymbols[selectedButton].streamType
-  );
+  const [streamType, setStreamType] = useState(TopSymbols[selectedButton].streamType);
 
   const { prices } = useStream(
     TopSymbols[selectedButton].symbols.map((s) => ({
@@ -49,8 +47,7 @@ const MarketHeader = (): JSX.Element => {
     }))
   );
 
-  const { query, symbols, aggregates } =
-    TopSymbols[selectedButton as EquityType];
+  const { query, symbols, aggregates } = TopSymbols[selectedButton as EquityType];
   const { loading: glLoading, data: glData } = useQuery(query, {
     variables: {
       input: { symbols },
@@ -78,30 +75,28 @@ const MarketHeader = (): JSX.Element => {
         {glLoading && (
           <>
             {new Array(4).fill(null).map((_, i) => (
-              <div
-                key={i}
-                className="rounded bg-slate-200 h-12 w-32 rounded-lg animate-pulse border"
-              ></div>
+              <div key={i} className="rounded bg-slate-200 h-12 w-32 rounded-lg animate-pulse border"></div>
             ))}
           </>
         )}
         {glData &&
-          glData[Object.keys(glData)[0]].map((sec) => (
-            <div key={sec.id}>
-              <PriceChip
-                name={sec.underlyingAsset?.name || sec.name}
-                symbol={sec.symbol}
-                price={
-                  prices[sec.symbol]?.close ||
-                  sec.lastTrade?.price ||
-                  sec.currentRate ||
-                  sec.currentPrice
-                }
-                lastPrice={sec.aggregates[0].close}
-                streamType={streamType}
-              />
-            </div>
-          ))}
+          glData[Object.keys(glData)[0]].map(
+            (sec: Record<string, unknown> /* Steve: will fix this at a later date */) => (
+              <div key={sec.id as string}>
+                <PriceChip
+                  name={sec.name as string}
+                  symbol={sec.symbol as string}
+                  price={
+                    prices[sec.symbol as string]?.close?.toString() ||
+                    (sec.lastTrade as { price: string })?.price ||
+                    (sec.currentRate as string)
+                  }
+                  lastPrice={(sec.aggregates as { close: string }[])[0].close}
+                  streamType={streamType}
+                />
+              </div>
+            )
+          )}
       </div>
     </div>
   );

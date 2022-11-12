@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Agg = { symbol: string; close: number };
 
@@ -15,9 +15,7 @@ type Stream = { t: SymbolType; s: string };
 export default function useStream(streams: Stream[]): UseStreamResult {
   const symbols = streams.map(({ t, s }) => [t, "1S", s].join(":"));
 
-  const url = `https://sse.yuzu.dev/sse?token=demo&streams=${symbols.join(
-    ","
-  )}`;
+  const url = `https://sse.yuzu.dev/sse?token=demo&streams=${symbols.join(",")}`;
 
   const [prices, setPrices] = useState<Record<string, Agg>>({});
 
@@ -36,7 +34,7 @@ export default function useStream(streams: Stream[]): UseStreamResult {
       stream.close();
       setPrices({});
     };
-  }, [JSON.stringify(streams)]);
+  }, symbols);
 
   return {
     pending: Object.keys(prices).length === 0,

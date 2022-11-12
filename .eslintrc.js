@@ -25,5 +25,6 @@ module.exports = {
     // Support for no react import
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "react-hooks/exhaustive-deps": "off",
   },
 };
