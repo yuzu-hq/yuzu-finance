@@ -1,5 +1,6 @@
-import { MarketHeader, YuzuHeader } from "../components";
 import { Outlet } from "react-router-dom";
+
+import { MarketHeader, YuzuHeader } from "../components";
 
 export default function Layout() {
   return (

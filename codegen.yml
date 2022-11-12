@@ -1,0 +1,10 @@
+---
+schema: "https://graph.yuzu.dev/graphql"
+documents: "./src/**/*.{ts,tsx}"
+generates:
+  ./src/types/index.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      fetcher: fetch

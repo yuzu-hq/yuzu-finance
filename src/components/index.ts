@@ -5,4 +5,4 @@ export { default as TickerRow } from "./TickerRow";
 export { default as YuzuHeader } from "./YuzuHeader/YuzuHeader";
 export { default as MarketHeader } from "./MarketHeader/MarketHeader";
 export { default as WatchList } from "./WatchList/WatchList";
-export { default as TimePeriodFilter } from './TimePeriodFilter';
+export { default as TimePeriodFilter } from "./TimePeriodFilter";

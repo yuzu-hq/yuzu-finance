@@ -1,44 +1,43 @@
-import djs from "dayjs";
-
-import { Link, Outlet } from "react-router-dom";
-import { usEquities, forex, crypto, WatchListQuery } from "../queries";
-import { MarketHeader, SearchBar, WatchList } from "../components";
-import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import useStream from "../useStream";
+
+import djs from "dayjs";
+import { useState } from "react";
+
+import { SearchBar, WatchList } from "../components";
+import { WatchListQuery } from "../queries";
+import { AtAGlanceQueryQuery, AtAGlanceQueryQueryVariables } from "../types";
+import useStream, { SymbolType } from "../useStream";
 
 const initialWatchList = ["S:VTI", "S:SPY", "C:BTC-USD"];
 
 const today = djs().format("YYYY-MM-DD");
-const YuzuHome = () => {
+const YuzuHome = (): JSX.Element => {
   const [watchList, setWatchList] = useState(initialWatchList);
 
-  // @ts-ignore
   const subscribedSymbols = watchList.map((wl) => ({
-    t: wl.split(":")[0],
+    t: wl.split(":")[0] as SymbolType,
     s: wl.split(":")[1],
   }));
 
-  const { pending, prices } = useStream(subscribedSymbols);
+  const { prices } = useStream(subscribedSymbols);
 
-  const { loading: wlLoading, data: wlData } = useQuery(WatchListQuery, {
-    variables: {
-      cry: {
-        symbols: watchList
-          .filter((w) => w.startsWith("C"))
-          .map((f) => f.split(":")[1]),
+  const { loading: wlLoading, data: wlData } = useQuery<AtAGlanceQueryQuery, AtAGlanceQueryQueryVariables>(
+    WatchListQuery,
+    {
+      variables: {
+        cry: {
+          symbols: watchList.filter((w) => w.startsWith("C")).map((f) => f.split(":")[1]),
+        },
+        cryAggregates: { limit: 2, before: `${today}` },
+        sec: {
+          symbols: watchList.filter((w) => w.startsWith("S")).map((f) => f.split(":")[1]),
+        },
+        secAggregates: { limit: 1, before: `${today}` },
       },
-      cryAggregates: { limit: 2, before: `${today}` },
-      sec: {
-        symbols: watchList
-          .filter((w) => w.startsWith("S"))
-          .map((f) => f.split(":")[1]),
-      },
-      secAggregates: { limit: 1, before: `${today}` },
-    },
-  });
+    }
+  );
 
-  const handleSymbolSelected = (symbol: string) => {
+  const handleSymbolSelected = (symbol: string): void => {
     setWatchList((wl) => [symbol, ...wl]);
   };
 
@@ -48,12 +47,7 @@ const YuzuHome = () => {
         <div className="w-1/2">
           <SearchBar onSymbolSelected={handleSymbolSelected} />
         </div>
-        <WatchList
-          wlLoading={wlLoading}
-          wlData={wlData}
-          prices={prices}
-          watchList={watchList}
-        />
+        <WatchList wlLoading={wlLoading} wlData={wlData} prices={prices} watchList={watchList} />
       </main>
     </>
   );

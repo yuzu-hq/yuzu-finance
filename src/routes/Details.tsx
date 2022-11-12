@@ -1,206 +1,189 @@
-import { useParams } from "react-router-dom";
-import { AreaChart } from 'react-chartkick';
-import djs from "dayjs";
-import { currencyFormat } from "../utilities";
-import 'chartkick/chart.js'
 import { useQuery } from "@apollo/client";
-import { usEquities, forex, crypto } from "../queries";
-import { useState } from "react";
-import { TimePeriodFilter } from '../components';
 
-export default function Details() {
+import djs from "dayjs";
+import { useState } from "react";
+// @ts-ignore: no types 😱
+import { AreaChart } from "react-chartkick";
+import { useParams } from "react-router-dom";
+
+import { TimePeriodFilter } from "../components";
+import { crypto, forex, usEquities } from "../queries";
+import {
+  CryptoAggregatePeriod,
+  CryptoQueryQuery,
+  CryptoQueryQueryVariables,
+  ForexQueryQuery,
+  ForexQueryQueryVariables,
+  SecuritiesQueryQuery,
+  SecuritiesQueryQueryVariables,
+  SecurityAggregatePeriod,
+} from "../types";
+import { currencyFormat } from "../utilities";
+import "chartkick/chart.js";
+
+type AggPeriod = "DAY" | "MINUTE" | "HOUR";
+type ChartProps = {
+  loading: boolean;
+  onPeriodChange: (p: AggPeriod) => void;
+  aggPeriod: AggPeriod;
+  data: {
+    name: string;
+    lastTradePrice: string;
+    lastTradeTime: string | null;
+    aggregates: { time: string; close: string }[];
+  } | null;
+};
+
+const Chart = (props: ChartProps): JSX.Element | null => {
+  const { loading, data, aggPeriod, onPeriodChange } = props;
+
+  if (loading && !data) {
+    return <div>Loading...</div>;
+  } else if (data) {
+    const { name, lastTradeTime, lastTradePrice, aggregates } = data;
+
+    const chart = aggregates.map(({ time, close }) => {
+      let format = {
+        HOUR: "MMM DTHH",
+        MINUTE: "HH:mm",
+        DAY: "MMM D, YYYY",
+      }[aggPeriod];
+
+      return [djs(time).format(format), close];
+    });
+
+    return (
+      <main>
+        <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
+          <div className="flex gap-x-2 justify-between">{name}</div>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-4xl	mb-2">{currencyFormat.format(parseFloat(lastTradePrice))}</h3>
+          {lastTradeTime && (
+            <p className="text-gray-500 text-sm mb-2">{djs(lastTradeTime).format("MMM D, YYYY h:mm A")}</p>
+          )}
+          <div className="mb-2">
+            <TimePeriodFilter onPeriodChange={onPeriodChange} aggPeriod={aggPeriod} />
+          </div>
+          <AreaChart
+            data={chart}
+            discrete={true}
+            prefix="$"
+            thousands=","
+            round={2}
+            zeros={false}
+            min={null}
+            max={null}
+          />
+        </div>
+      </main>
+    );
+  }
+
+  return null;
+};
+
+export default function Details(): JSX.Element {
   let params = useParams();
-  const equitySymbol = params.tickerId;
+  const equitySymbol = params.tickerId as string;
   const streamType = params.streamType;
 
-  const [aggLimit, setAggLimit] = useState<number>(30);
   const [aggPeriod, setAggPeriod] = useState<"DAY" | "HOUR" | "MINUTE">("DAY");
-  const [timePeriod, setTimePeriod] = useState<number>(30);
 
-  let graphData;
+  const aggLimit = {
+    MINUTE: 500,
+    HOUR: 60,
+    DAY: 30,
+  }[aggPeriod];
 
-  if (streamType === "S") {
-    const { loading, data} = useQuery(usEquities, {
+  const { loading: securitiesLoading, data: securitiesPayload } = useQuery<
+    SecuritiesQueryQuery,
+    SecuritiesQueryQueryVariables
+  >(usEquities, {
+    skip: streamType !== "S",
+    variables: {
+      input: { symbols: [equitySymbol] },
+      aggregatesInput: {
+        period: aggPeriod as SecurityAggregatePeriod,
+        limit: aggLimit,
+      },
+    },
+  });
+
+  const { loading: cryptoLoading, data: cryptoPayload } = useQuery<CryptoQueryQuery, CryptoQueryQueryVariables>(
+    crypto,
+    {
+      skip: streamType !== "C",
       variables: {
         input: { symbols: [equitySymbol] },
         aggregatesInput: {
-          period: aggPeriod,
-          limit: aggLimit
+          period: aggPeriod as CryptoAggregatePeriod,
+          limit: aggLimit,
         },
       },
-    });
-
-    if (loading) {
-      return (
-        <div>
-          Loading...
-        </div>
-      )
     }
-    const USSecurities = data?.securities[0];
-    const { 
-      lastTrade: { price: lastPrice, time: lastTime },
-      name: stockName
-    } = USSecurities;
-    graphData = USSecurities.aggregates.map((agg, i) => {
-      let time = djs(agg.time).format('MMM D, YYYY');
-      if (aggPeriod === "HOUR") {
-        time =  djs(agg.time).format('MMM DTHH');
-      }
-      if (aggPeriod === "MINUTE") {
-        time =  djs(agg.time).format('HH:mm');
-      }
-      const close = agg.close;
-      return [time, close];
-    }) || [];
+  );
 
-    return (
-      graphData && (
-        <>
-          <main>
-            <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
-              <div className="flex gap-x-2 justify-between">
-                {stockName}
-              </div>
-            </div>
-            <div className="mt-4">
-              <h3 className="text-4xl	mb-2">{currencyFormat.format(lastPrice)}</h3>
-              <p className="text-gray-500 text-sm mb-2">{djs(lastTime).format("MMM D, YYYY h:mm A")}</p>
-              <div className="mb-2">
-                <TimePeriodFilter setAggPeriod={setAggPeriod} setAggLimit={setAggLimit} setTimePeriod={setTimePeriod} timePeriod={timePeriod} />
-              </div>
-              <AreaChart 
-                data={graphData} discrete={true} prefix="$" thousands="," round={2} zeros={false}
-                min={null} max={null}
-              />
-            </div>
-          </main>
-        </>
-      )
-    );
-  }
-
-  if (streamType === "C") {
-    const { loading, data} = useQuery(crypto, {
-      variables: {
-        input: { symbols: [equitySymbol] },
-        aggregatesInput: {
-          period: aggPeriod,
-          limit: aggLimit
-        },
+  const { loading: forexLoading, data: forexPayload } = useQuery<ForexQueryQuery, ForexQueryQueryVariables>(forex, {
+    variables: {
+      input: { symbols: [equitySymbol] },
+      aggregatesInput: {
+        limit: aggLimit,
       },
-    });
+    },
+  });
 
-    if (loading) {
+  switch (streamType) {
+    case "S":
       return (
-        <div>
-          Loading...
-        </div>
-      )
-    }
-    const cryptoSecurities = data?.cryptoTradingPairs[0];
-    const { 
-      lastTrade: { price: lastPrice, time: lastTime },
-      id: cryptoName
-    } = cryptoSecurities;
-    graphData = cryptoSecurities.aggregates.map((agg, i) => {
-      let time = djs(agg.time).format('MMM D, YYYY');
-      if (aggPeriod === "HOUR") {
-        time =  djs(agg.time).format('MMM DTHH');
-      }
-      if (aggPeriod === "MINUTE") {
-        time =  djs(agg.time).format('HH:mm');
-      }
-      const close = agg.close;
-      return [time, close];
-    }) || [];
-
-    return (
-      graphData && (
-        <>
-          <main>
-            <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
-              <div className="flex gap-x-2 justify-between">
-                {cryptoName}
-              </div>
-            </div>
-            <div className="mt-4">
-              <h3 className="text-4xl	mb-2">{currencyFormat.format(lastPrice)}</h3>
-              <p className="text-gray-500 text-sm mb-2">{djs(lastTime).format("MMM D, YYYY h:mm A")}</p>
-              <div className="mb-2">
-                <TimePeriodFilter setAggPeriod={setAggPeriod} setAggLimit={setAggLimit} setTimePeriod={setTimePeriod} timePeriod={timePeriod} />
-              </div>
-              <AreaChart 
-                data={graphData} discrete={true} prefix="$" thousands="," round={2} zeros={false}
-                min={null} max={null} 
-              />
-            </div>
-          </main>
-        </>
-      )
-    );
-  }
-
-  if (streamType === "F") {
-    const { loading, data} = useQuery(forex, {
-      variables: {
-        input: { symbols: [equitySymbol] },
-        aggregatesInput: {
-          //period: aggPeriod,
-          limit: aggLimit
-        },
-      },
-    });
-
-    if (loading) {
+        <Chart
+          loading={securitiesLoading}
+          data={
+            (securitiesPayload && {
+              name: securitiesPayload.securities[0].name,
+              lastTradePrice: securitiesPayload.securities[0].lastTrade?.price,
+              lastTradeTime: securitiesPayload.securities[0].lastTrade?.time,
+              aggregates: securitiesPayload.securities[0].aggregates,
+            }) ||
+            null
+          }
+          aggPeriod={aggPeriod}
+          onPeriodChange={setAggPeriod}
+        />
+      );
+    case "C":
       return (
-        <div>
-          Loading...
-        </div>
-      )
-    }
-    const forexSecurities = data?.forexTradingPairs[0];
-    const { 
-      currentRate: lastPrice,
-      time: lastTime,
-      id: forexName
-    } = forexSecurities;
-    graphData = forexSecurities.aggregates.map((agg, i) => {
-      let time = djs(agg.time).format('MMM D, YYYY');
-      if (aggPeriod === "HOUR") {
-        time =  djs(agg.time).format('MMM DTHH');
-      }
-      if (aggPeriod === "MINUTE") {
-        time =  djs(agg.time).format('HH:mm');
-      }
-      const close = (parseFloat(agg.close)).toFixed(4);
-      return [time, close];
-    }) || [];
-
-    return (
-      graphData && (
-        <>
-          <main>
-            <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
-              <div className="flex gap-x-2 justify-between">
-                {forexName}
-              </div>
-            </div>
-            <div className="mt-4">
-              <h3 className="text-4xl	mb-2">{lastPrice}</h3>
-              <p className="text-gray-500 text-sm mb-2">{djs(lastTime).format("MMM D, YYYY h:mm A")}</p>
-              <div className="mb-2">
-                <TimePeriodFilter setAggPeriod={setAggPeriod} setAggLimit={setAggLimit} setTimePeriod={setTimePeriod} timePeriod={timePeriod} />
-              </div>
-              <AreaChart 
-                data={graphData} discrete={true} round={3} zeros={false}
-                min={null} max={null} 
-              />
-            </div>
-          </main>
-        </>
-      )
-    );
+        <Chart
+          loading={cryptoLoading}
+          data={
+            (cryptoPayload && {
+              name: cryptoPayload.cryptoTradingPairs[0].symbol,
+              lastTradePrice: cryptoPayload.cryptoTradingPairs[0].lastTrade?.price,
+              lastTradeTime: cryptoPayload.cryptoTradingPairs[0].lastTrade?.time,
+              aggregates: cryptoPayload.cryptoTradingPairs[0].aggregates,
+            }) ||
+            null
+          }
+          aggPeriod={aggPeriod}
+          onPeriodChange={setAggPeriod}
+        />
+      );
+    default:
+      return (
+        <Chart
+          loading={forexLoading}
+          data={
+            (forexPayload && {
+              name: forexPayload.forexTradingPairs[0].symbol,
+              lastTradePrice: forexPayload.forexTradingPairs[0].currentRate,
+              lastTradeTime: null,
+              aggregates: forexPayload.forexTradingPairs[0].aggregates,
+            }) ||
+            null
+          }
+          aggPeriod={aggPeriod}
+          onPeriodChange={setAggPeriod}
+        />
+      );
   }
-  
 }

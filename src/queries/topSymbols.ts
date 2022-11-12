@@ -1,10 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const usEquities = gql`
-  query SecuritiesQuery(
-    $input: SecurityFilterInput
-    $aggregatesInput: SecurityAggregateFilterInput
-  ) {
+  query SecuritiesQuery($input: SecurityFilterInput, $aggregatesInput: SecurityAggregateFilterInput) {
     securities(input: $input) {
       id
       symbol
@@ -19,23 +16,19 @@ export const usEquities = gql`
       aggregates(input: $aggregatesInput) {
         time
         close
-        high
-        low
       }
     }
   }
 `;
 
 export const crypto = gql`
-  query CryptoQuery(
-    $input: CryptoTradingPairFilterInput
-    $aggregatesInput: CryptoTradingPairAggregateFilterInput
-  ) {
+  query CryptoQuery($input: CryptoTradingPairFilterInput, $aggregatesInput: CryptoTradingPairAggregateFilterInput) {
     cryptoTradingPairs(input: $input) {
       id
       symbol
       lastTrade {
         price
+        time
       }
       aggregates(input: $aggregatesInput) {
         time
@@ -46,10 +39,7 @@ export const crypto = gql`
 `;
 
 export const forex = gql`
-  query ForexQuery(
-    $input: ForexTradingPairFilterInput
-    $aggregatesInput: ForexTradingPairAggregateFilterInput
-  ) {
+  query ForexQuery($input: ForexTradingPairFilterInput, $aggregatesInput: ForexTradingPairAggregateFilterInput) {
     forexTradingPairs(input: $input) {
       id
       symbol

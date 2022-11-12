@@ -1,11 +1,12 @@
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from "@apollo/client";
+
 import React from "react";
-import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+
 import App from "./App";
-
 import "./styles/index.css";
+import ReactDOM from "react-dom/client";
 
-import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 //import { BatchHttpLink } from "@apollo/client/link/batch-http";
 
 const link = new HttpLink({

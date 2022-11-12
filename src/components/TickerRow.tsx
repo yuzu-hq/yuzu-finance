@@ -1,12 +1,11 @@
 import cx from "classnames";
-import djs from "dayjs";
-import { currencyFormat } from "../utilities";
 import { useNavigate } from "react-router-dom";
+
+import { currencyFormat } from "../utilities";
 
 type TickerRowProps = {
   symbol: string;
   name: string;
-  exp?: string;
   price: string;
   lastPrice: string;
   streamType: string;
@@ -18,8 +17,6 @@ export default function TickerRow(props: TickerRowProps): JSX.Element {
   const lastPricef = parseFloat(lastPrice);
   const pctChange = (pricef - lastPricef) / lastPricef;
   let navigate = useNavigate();
-
-  const date = props.exp && djs(props.exp).format("MMM YYYY");
 
   const textClass = cx("w-1/6", {
     "text-emerald-700": pctChange > 0,
@@ -34,17 +31,14 @@ export default function TickerRow(props: TickerRowProps): JSX.Element {
   return (
     <tr
       className="w-full border-b text-sm font-semibold hover:bg-slate-100 hover:cursor-pointer"
-      onClick={() => navigate(`${streamType}:${symbol}`)}
+      onClick={(): void => navigate(`${streamType}:${symbol}`)}
     >
       <td className="items-center w-max py-3">
-        <div className="bg-slate-300 w-fit px-2 py-1 text-slate-600 rounded text-sm">
-          {symbol}
-        </div>
+        <div className="bg-slate-300 w-fit px-2 py-1 text-slate-600 rounded text-sm">{symbol}</div>
       </td>
       <td className="w-[35%] px-8">
         <div className="flex flex-col justify-between">
           <p className="line-clamp-1 max-w-full">{name}</p>
-          {date && <p className="text-xs font-light">Exp: {date}</p>}
         </div>
       </td>
       <td className="w-1/6">
