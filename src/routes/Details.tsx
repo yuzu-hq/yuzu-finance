@@ -7,7 +7,7 @@ import { AreaChart } from "react-chartkick";
 import { useParams } from "react-router-dom";
 
 import { TimePeriodFilter } from "../components";
-import { crypto, forex, usEquities } from "../queries";
+import { crypto, forex, usEquities, usMarketHours } from "../queries";
 import {
   CryptoAggregatePeriod,
   CryptoQueryQuery,
@@ -17,6 +17,8 @@ import {
   SecuritiesQueryQuery,
   SecuritiesQueryQueryVariables,
   SecurityAggregatePeriod,
+  UsMarketHoursQuery,
+  UsMarketHoursQueryVariables,
 } from "../types";
 import { currencyFormat } from "../utilities";
 import "chartkick/chart.js";
@@ -83,6 +85,29 @@ const Chart = (props: ChartProps): JSX.Element | null => {
   return null;
 };
 
+// Return berfore and after matching nextTradingDay if the market is operations
+//
+// if it's closed, then retrun previousDay
+function currentMarketHours(data: UsMarketHoursQuery | undefined): { before: string; after: string } | undefined {
+  if (!data) {
+    return undefined;
+  }
+
+  const { openNow, nextTradingDay, previousTradingDay } = data.usMarketHours;
+
+  if (openNow) {
+    return {
+      before: nextTradingDay.closeTime,
+      after: nextTradingDay.openTime,
+    };
+  } else {
+    return {
+      before: previousTradingDay.closeTime,
+      after: previousTradingDay.openTime,
+    };
+  }
+}
+
 export default function Details(): JSX.Element {
   let params = useParams();
   const equitySymbol = params.tickerId as string;
@@ -96,26 +121,19 @@ export default function Details(): JSX.Element {
     DAY: 30,
   }[aggPeriod];
 
-  // usMarketHours
-  // const { loading: usMarketHoursLoading, data: usMarketHoursData } = useQuery<
-  //   UsMarketHoursQuery,
-  //   UsMarketHoursQueryVariables
-  // >(usMarketHours);
-
-  //const { openNow } = usMarketHoursData?.usMarketHours;
+  const { data: usMarketHoursData } = useQuery<UsMarketHoursQuery, UsMarketHoursQueryVariables>(usMarketHours);
 
   const { loading: securitiesLoading, data: securitiesPayload } = useQuery<
     SecuritiesQueryQuery,
     SecuritiesQueryQueryVariables
   >(usEquities, {
-    skip: streamType !== "S",
+    skip: streamType !== "S" && usMarketHoursData === undefined,
     variables: {
       input: { symbols: [equitySymbol] },
       aggregatesInput: {
         period: aggPeriod as SecurityAggregatePeriod,
         limit: aggLimit,
-        after: "2022-11-15T14:30:00.000Z",
-        before: "2022-11-15T21:00:00.000Z",
+        ...currentMarketHours(usMarketHoursData),
       },
     },
   });
