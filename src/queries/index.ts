@@ -1,2 +1,2 @@
 export { WatchListQuery } from "./watchListQuery";
-export { usEquities, crypto, forex } from "./topSymbols";
+export { usEquities, crypto, forex, usMarketHours } from "./topSymbols";

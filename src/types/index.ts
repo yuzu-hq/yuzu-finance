@@ -903,6 +903,11 @@ export type SearchQueryQueryVariables = Exact<{
 
 export type SearchQueryQuery = { __typename?: 'Query', cryptoTradingPairs: Array<{ __typename?: 'CryptoTradingPair', id: string, symbol: string, aggregates: Array<{ __typename?: 'CryptoAggregate', time: any, close: any }>, baseAsset: { __typename?: 'CryptoAsset', name: string, symbol: string } }>, securities: Array<{ __typename?: 'Security', symbol: string, name: string, aggregates: Array<{ __typename?: 'SecurityAggregate', close: any }> }> };
 
+export type UsMarketHoursQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsMarketHoursQuery = { __typename?: 'Query', usMarketHours: { __typename?: 'UsMarketHours', openNow: boolean, previousTradingDay: { __typename?: 'TradingDay', openTime: any, closeTime: any }, nextTradingDay: { __typename?: 'TradingDay', openTime: any, closeTime: any } } };
+
 export type SecuritiesQueryQueryVariables = Exact<{
   input?: InputMaybe<SecurityFilterInput>;
   aggregatesInput?: InputMaybe<SecurityAggregateFilterInput>;

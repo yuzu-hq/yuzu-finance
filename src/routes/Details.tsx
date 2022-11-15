@@ -96,6 +96,14 @@ export default function Details(): JSX.Element {
     DAY: 30,
   }[aggPeriod];
 
+  // usMarketHours
+  // const { loading: usMarketHoursLoading, data: usMarketHoursData } = useQuery<
+  //   UsMarketHoursQuery,
+  //   UsMarketHoursQueryVariables
+  // >(usMarketHours);
+
+  //const { openNow } = usMarketHoursData?.usMarketHours;
+
   const { loading: securitiesLoading, data: securitiesPayload } = useQuery<
     SecuritiesQueryQuery,
     SecuritiesQueryQueryVariables
@@ -106,6 +114,8 @@ export default function Details(): JSX.Element {
       aggregatesInput: {
         period: aggPeriod as SecurityAggregatePeriod,
         limit: aggLimit,
+        after: "2022-11-15T14:30:00.000Z",
+        before: "2022-11-15T21:00:00.000Z",
       },
     },
   });

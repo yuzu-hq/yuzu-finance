@@ -1,5 +1,21 @@
 import { gql } from "@apollo/client";
 
+export const usMarketHours = gql`
+  query usMarketHours {
+    usMarketHours {
+      openNow
+      previousTradingDay {
+        openTime
+        closeTime
+      }
+      nextTradingDay {
+        openTime
+        closeTime
+      }
+    }
+  }
+`;
+
 export const usEquities = gql`
   query SecuritiesQuery($input: SecurityFilterInput, $aggregatesInput: SecurityAggregateFilterInput) {
     securities(input: $input) {
