@@ -8,19 +8,7 @@ import { currencyFormat } from "../utilities";
 
 const SearchQuery = gql`
   query SearchQuery($query: String) {
-    cryptoTradingPairs(input: { limit: 5 }) {
-      id
-      symbol
-      aggregates(input: { period: MINUTE, limit: 1 }) {
-        time
-        close
-      }
-      baseAsset {
-        name
-        symbol
-      }
-    }
-    securities(input: { limit: 5 }) {
+    securities(input: { limit: 5, search: $query }) {
       symbol
       name
       aggregates(input: { limit: 1 }) {
@@ -52,7 +40,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
     }
   }, [active]);
 
-  const hasResults = (data?.securities.length ?? 0) + (data?.cryptoTradingPairs.length ?? 0) > 0;
+  const hasResults = data?.securities.length; //+ (data?.cryptoTradingPairs.length ?? 0) > 0;
 
   const handleClick = (s: string): void => {
     onSymbolSelected(s);
@@ -96,7 +84,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
                   <p className="text-xs font-bold">{currencyFormat.format(parseFloat(s.aggregates[0]?.close || 0))}</p>
                 </div>
               ))}
-              {data.cryptoTradingPairs.map((c) => (
+              {/* {data.cryptoTradingPairs.map((c) => (
                 <div
                   onClick={(): void => handleClick(`C:${c.symbol}`)}
                   className="flex flex-row justify-between items-center hover:bg-slate-100 hover:cursor-pointer p-4"
@@ -108,7 +96,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
                   </div>
                   <p className="text-xs font-bold">{currencyFormat.format(parseFloat(c.aggregates[0]?.close || 0))}</p>
                 </div>
-              ))}
+              ))} */}
             </>
           )}
         </div>

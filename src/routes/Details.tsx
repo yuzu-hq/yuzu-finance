@@ -1,5 +1,7 @@
 import { useQuery } from "@apollo/client";
+import { ArrowSmDownIcon, ArrowSmUpIcon } from "@heroicons/react/outline";
 
+import cx from "classnames";
 import djs from "dayjs";
 import { useState } from "react";
 // @ts-ignore: no types 😱
@@ -54,13 +56,42 @@ const Chart = (props: ChartProps): JSX.Element | null => {
       return [djs(time).format(format), close];
     });
 
+    const lastTrade = parseFloat(lastTradePrice);
+    const firstTrade = parseFloat(aggregates[0].close);
+    const priceDelta = lastTrade - firstTrade;
+    const percentChange = priceDelta / firstTrade;
+
+    const chartColor = percentChange > 0 ? "#059669" : "#dc2626";
+
     return (
       <main>
         <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
           <div className="flex gap-x-2 justify-between">{name}</div>
         </div>
         <div className="mt-4">
-          <h3 className="text-4xl	mb-2">{currencyFormat.format(parseFloat(lastTradePrice))}</h3>
+          <div
+            className={cx("flex items-center gap-2", {
+              "text-emerald-600": percentChange > 0,
+              "text-red-600": percentChange < 0,
+            })}
+          >
+            <h3 className="text-4xl text-black mb-2">{currencyFormat.format(parseFloat(lastTradePrice))}</h3>
+            <div
+              className={cx("p-1 flex flex-row rounded items-center", {
+                "bg-emerald-100 text-emerald-600": percentChange > 0,
+                "bg-red-100 text-red-600": percentChange < 0,
+              })}
+            >
+              <span className="inline-flex items-center flex-row h-8 aspect-square">
+                {percentChange < 0 && <ArrowSmDownIcon className="text-red-600 w-3/4" />}
+                {percentChange > 0 && <ArrowSmUpIcon className="text-emerald-600 w-3/4" />}
+              </span>
+              <p>{(percentChange * 100).toFixed(2)}%</p>
+            </div>
+            <p>
+              {percentChange > 0 && "+"} {priceDelta.toFixed(2)}
+            </p>
+          </div>
           {lastTradeTime && (
             <p className="text-gray-500 text-sm mb-2">{djs(lastTradeTime).format("MMM D, YYYY h:mm A")}</p>
           )}
@@ -68,6 +99,7 @@ const Chart = (props: ChartProps): JSX.Element | null => {
             <TimePeriodFilter onPeriodChange={onPeriodChange} aggPeriod={aggPeriod} />
           </div>
           <AreaChart
+            colors={[chartColor]}
             data={chart}
             discrete={true}
             prefix="$"
@@ -122,6 +154,7 @@ export default function Details(): JSX.Element {
   }[aggPeriod];
 
   const { data: usMarketHoursData } = useQuery<UsMarketHoursQuery, UsMarketHoursQueryVariables>(usMarketHours);
+  const beforeAndAfter = aggPeriod === "MINUTE" ? currentMarketHours(usMarketHoursData) : undefined;
 
   const { loading: securitiesLoading, data: securitiesPayload } = useQuery<
     SecuritiesQueryQuery,
@@ -133,7 +166,7 @@ export default function Details(): JSX.Element {
       aggregatesInput: {
         period: aggPeriod as SecurityAggregatePeriod,
         limit: aggLimit,
-        ...currentMarketHours(usMarketHoursData),
+        ...beforeAndAfter,
       },
     },
   });

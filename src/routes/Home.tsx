@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 
 import djs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SearchBar, WatchList } from "../components";
 import { WatchListQuery } from "../queries";
@@ -12,7 +12,12 @@ const initialWatchList = ["S:VTI", "S:SPY", "C:BTC-USD"];
 
 const today = djs().format("YYYY-MM-DD");
 const YuzuHome = (): JSX.Element => {
-  const [watchList, setWatchList] = useState(initialWatchList);
+  const storedWatchList: string[] = [...JSON.parse(localStorage["watchList"])];
+  const [watchList, setWatchList] = useState(storedWatchList || initialWatchList);
+
+  useEffect(() => {
+    localStorage.setItem("watchList", JSON.stringify(watchList));
+  }, [watchList]);
 
   const subscribedSymbols = watchList.map((wl) => ({
     t: wl.split(":")[0] as SymbolType,
