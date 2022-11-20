@@ -15,15 +15,15 @@ interface NewsRowProps {
 const NewsRow = ({ title, url, time, publisher, imageUrl, subjects }: NewsRowProps): JSX.Element => {
   let navigate = useNavigate();
   return (
-    // <a href={url} target="_blank"></a>
     <div className="border-b border-y-2 w-9/12 py-3 flex flex-col gap-3">
       <a href={url} target="_blank">
         <tr className="w-full flex flex-row items-center hover:bg-slate-100 hover:cursor-pointer">
           <td className="w-9/12 mr-3">
             <div className="p2 flex flex-col gap-3">
-              <span className="text-sm text-gray-600 pb-1">
-                {publisher} - {djs(time).format("YYYY-MM-DD h:mm A")}
-              </span>
+              <div className="text-sm text-gray-500 pb-1">
+                <span className="font-semibold ">{publisher}</span> {"\u2022"}{" "}
+                <span className="">{djs(time).format("YYYY-MM-DD h:mm A")}</span>
+              </div>
               {title}
             </div>
           </td>
