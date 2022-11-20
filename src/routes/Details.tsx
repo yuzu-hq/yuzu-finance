@@ -32,9 +32,11 @@ type ChartProps = {
   aggPeriod: AggPeriod;
   data: {
     name: string;
+    symbol?: string;
     lastTradePrice: string;
     lastTradeTime: string | null;
     aggregates: { time: string; close: string }[];
+    newsArticles?: SecuritiesQueryQuery["securities"][number]["newsArticles"];
   } | null;
 };
 
@@ -44,7 +46,7 @@ const Chart = (props: ChartProps): JSX.Element | null => {
   if (loading && !data) {
     return <div>Loading...</div>;
   } else if (data) {
-    const { name, lastTradeTime, lastTradePrice, aggregates } = data;
+    const { name, symbol, lastTradeTime, lastTradePrice, aggregates, newsArticles } = data;
 
     const chart = aggregates.map(({ time, close }) => {
       let format = {
@@ -116,6 +118,26 @@ const Chart = (props: ChartProps): JSX.Element | null => {
             max={null}
           />
         </div>
+        {newsArticles && (
+          <div className="mt-5">
+            <h3 className="mb-5 font-semibold">News about {symbol}</h3>
+            <div className="flex flex-row overflow-x-scroll gap-2">
+              {newsArticles.map((newsArticle) => {
+                return (
+                  <a href={newsArticle.url} target="_blank">
+                    <div className="flex flex-col gap-2 w-48 hover:bg-gray-200 hover:cursor-pointer">
+                      {newsArticle.imageUrl && <img src={newsArticle.imageUrl} />}
+                      <div className="p-2 flex flex-col gap-3 text-xs">
+                        <span className="text-black">{newsArticle.title}</span>
+                        <span className="text-gray-500">{djs(newsArticle.time).format("MMM D, YYYY h:mm A")}</span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </main>
     );
   }
@@ -208,9 +230,11 @@ export default function Details(): JSX.Element {
           data={
             (securitiesPayload && {
               name: securitiesPayload.securities[0].name,
+              symbol: securitiesPayload.securities[0].symbol,
               lastTradePrice: securitiesPayload.securities[0].lastTrade?.price,
               lastTradeTime: securitiesPayload.securities[0].lastTrade?.time,
               aggregates: securitiesPayload.securities[0].aggregates,
+              newsArticles: securitiesPayload.securities[0].newsArticles,
             }) ||
             null
           }

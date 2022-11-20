@@ -17,6 +17,13 @@ export const usEquities = gql`
         time
         close
       }
+      newsArticles {
+        title
+        url
+        time
+        publisher
+        imageUrl
+      }
     }
   }
 `;

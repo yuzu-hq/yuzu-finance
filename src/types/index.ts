@@ -914,7 +914,7 @@ export type SecuritiesQueryQueryVariables = Exact<{
 }>;
 
 
-export type SecuritiesQueryQuery = { __typename?: 'Query', securities: Array<{ __typename?: 'Security', id: string, symbol: string, name: string, issuer?: { __typename?: 'Company', name: string } | null, lastTrade?: { __typename?: 'Trade', price: any, time: any } | null, aggregates: Array<{ __typename?: 'SecurityAggregate', time: any, close: any }> }> };
+export type SecuritiesQueryQuery = { __typename?: 'Query', securities: Array<{ __typename?: 'Security', id: string, symbol: string, name: string, issuer?: { __typename?: 'Company', name: string } | null, lastTrade?: { __typename?: 'Trade', price: any, time: any } | null, aggregates: Array<{ __typename?: 'SecurityAggregate', time: any, close: any }>, newsArticles: Array<{ __typename?: 'NewsArticle', title: string, url: string, time: any, publisher: string, imageUrl?: string | null }> }> };
 
 export type CryptoQueryQueryVariables = Exact<{
   input?: InputMaybe<CryptoTradingPairFilterInput>;
