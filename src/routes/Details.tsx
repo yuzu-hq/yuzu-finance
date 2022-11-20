@@ -85,19 +85,20 @@ const Chart = (props: ChartProps): JSX.Element | null => {
           >
             <h3 className="text-4xl text-black mb-2">{currencyFormat.format(parseFloat(lastTradePrice))}</h3>
             <div
-              className={cx("p-1 flex flex-row rounded items-center", {
+              className={cx("px-1 flex flex-row text-sm font-semibold rounded items-center", {
                 "bg-emerald-100 text-emerald-600": percentChange > 0,
                 "bg-red-100 text-red-600": percentChange < 0,
               })}
             >
               <span className="inline-flex items-center flex-row h-8 aspect-square">
-                {percentChange < 0 && <ArrowSmDownIcon className="text-red-600 w-3/4" />}
-                {percentChange > 0 && <ArrowSmUpIcon className="text-emerald-600 w-3/4" />}
+                {percentChange < 0 && <ArrowSmDownIcon className="text-red-600" />}
+                {percentChange > 0 && <ArrowSmUpIcon className="text-emerald-600" />}
               </span>
               <p>{(percentChange * 100).toFixed(2)}%</p>
             </div>
             <p>
-              {percentChange > 0 && "+"} {priceDelta.toFixed(2)}
+              {percentChange > 0 && "+"}
+              {priceDelta.toFixed(2)}
             </p>
           </div>
           {lastTradeTime && (
