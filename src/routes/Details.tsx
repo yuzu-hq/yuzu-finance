@@ -119,16 +119,16 @@ const Chart = (props: ChartProps): JSX.Element | null => {
           />
         </div>
         {newsArticles && (
-          <div className="mt-5">
+          <div className="my-5 w-7/12">
             <h3 className="mb-5 font-semibold">News about {symbol}</h3>
             <div className="flex flex-row overflow-x-scroll gap-2">
               {newsArticles.map((newsArticle) => {
                 return (
                   <a href={newsArticle.url} target="_blank">
-                    <div className="flex flex-col gap-2 w-48 hover:bg-gray-200 hover:cursor-pointer">
+                    <div className="flex flex-col gap-2 h-64 w-64 rounded border-2 border-gray-300 hover:bg-gray-200 hover:cursor-pointer">
                       {newsArticle.imageUrl && <img src={newsArticle.imageUrl} />}
                       <div className="p-2 flex flex-col gap-3 text-xs">
-                        <span className="text-black">{newsArticle.title}</span>
+                        <span className="text-black text-clip">{newsArticle.title}</span>
                         <span className="text-gray-500">{djs(newsArticle.time).format("MMM D, YYYY h:mm A")}</span>
                       </div>
                     </div>
