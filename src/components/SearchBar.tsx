@@ -2,6 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 
 import cx from "classnames";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { SearchQueryQuery, SearchQueryQueryVariables } from "../types";
 import { currencyFormat } from "../utilities";
@@ -26,6 +27,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
   const { onSymbolSelected } = props;
   const [active, setActive] = useState(false);
   const [query, setQuery] = useState("");
+  let navigate = useNavigate();
 
   const { data } = useQuery<SearchQueryQuery, SearchQueryQueryVariables>(SearchQuery, {
     variables: {
@@ -45,6 +47,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
   const handleClick = (s: string): void => {
     onSymbolSelected(s);
     setActive(false);
+    navigate(s); // on search click navigates to details page for that stock but onSymbolSelected does not persist
   };
 
   return (

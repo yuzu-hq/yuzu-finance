@@ -4,8 +4,9 @@ import djs from "dayjs";
 import { useEffect, useState } from "react";
 
 import { SearchBar, WatchList } from "../components";
-import { WatchListQuery } from "../queries";
-import { AtAGlanceQueryQuery, AtAGlanceQueryQueryVariables } from "../types";
+import MarketNews from "../components/MarketNews";
+import { WatchListQuery, marketNewsQuery } from "../queries";
+import { AtAGlanceQueryQuery, AtAGlanceQueryQueryVariables, MarketNewsQuery } from "../types";
 import useStream, { SymbolType } from "../useStream";
 
 const initialWatchList = ["S:VTI", "S:SPY", "C:BTC-USD"];
@@ -42,17 +43,20 @@ const YuzuHome = (): JSX.Element => {
     }
   );
 
+  const { loading: newsLoading, data: newsData } = useQuery<MarketNewsQuery>(marketNewsQuery);
+
   const handleSymbolSelected = (symbol: string): void => {
     setWatchList((wl) => [symbol, ...wl]);
   };
 
   return (
     <>
-      <main className="w-full mt-8 flex flex-col items-center">
-        <div className="w-1/2">
+      <main className="w-full mt-8 flex flex-col">
+        <div className="w-1/2 self-center">
           <SearchBar onSymbolSelected={handleSymbolSelected} />
         </div>
         <WatchList wlLoading={wlLoading} wlData={wlData} prices={prices} watchList={watchList} />
+        <MarketNews newsLoading={newsLoading} newsData={newsData} />
       </main>
     </>
   );

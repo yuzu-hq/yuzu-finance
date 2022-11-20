@@ -1,2 +1,4 @@
 export { WatchListQuery } from "./watchListQuery";
-export { usEquities, crypto, forex, usMarketHours } from "./topSymbols";
+export { marketNewsQuery } from "./marketNewsQuery";
+export { usEquities, crypto, forex } from "./topSymbols";
+export { usMarketHours } from "./usMarketHoursQuery";

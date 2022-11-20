@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { ArrowSmDownIcon, ArrowSmUpIcon } from "@heroicons/react/outline";
+import { ArrowSmDownIcon, ArrowSmUpIcon, PlusSmIcon } from "@heroicons/react/outline";
 
 import cx from "classnames";
 import djs from "dayjs";
@@ -67,6 +67,12 @@ const Chart = (props: ChartProps): JSX.Element | null => {
       <main>
         <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
           <div className="flex gap-x-2 justify-between">{name}</div>
+          <div className="items-center flex">
+            <button className="px-4 py-2 inline-flex items-center gap-2 font-semibold text-sm bg-white border-2 border-gray-200 rounded-full shadow-sm">
+              <PlusSmIcon className="text-blue-500 w-4 h-4" />
+              <span className="text-black">Follow</span>
+            </button>
+          </div>
         </div>
         <div className="mt-4">
           <div
