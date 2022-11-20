@@ -125,9 +125,10 @@ const Chart = (props: ChartProps): JSX.Element | null => {
               {newsArticles.map((newsArticle) => {
                 return (
                   <a href={newsArticle.url} target="_blank">
-                    <div className="flex flex-col gap-2 h-64 w-64 rounded border-2 border-gray-300 hover:bg-gray-200 hover:cursor-pointer">
+                    <div className="flex flex-col gap-2 h-72 w-64 rounded border-2 border-gray-300 hover:bg-gray-200 hover:cursor-pointer">
                       {newsArticle.imageUrl && <img src={newsArticle.imageUrl} />}
                       <div className="p-2 flex flex-col gap-3 text-xs">
+                        <span className="text-gray-500 font-semibold">{newsArticle.publisher}</span>
                         <span className="text-black text-clip">{newsArticle.title}</span>
                         <span className="text-gray-500">{djs(newsArticle.time).format("MMM D, YYYY h:mm A")}</span>
                       </div>
