@@ -43,18 +43,9 @@ const NewsRow = ({ title, url, time, publisher, imageUrl, subjects }: NewsRowPro
                 <span
                   className="rounded-2xl text-xs p-2 border-2 border-gray-400 hover:bg-gray-300 hover:cursor-pointer"
                   onClick={(): void => navigate(`S:${symbol}`)}
-                  data-tooltip-target="tooltip-default"
                 >
                   {symbol}
                 </span>
-                <div
-                  id="tooltip-default"
-                  role="tooltip"
-                  className="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700"
-                >
-                  Tooltip content
-                  <div className="tooltip-arrow" data-popper-arrow></div>
-                </div>
               </>
             );
           })}
