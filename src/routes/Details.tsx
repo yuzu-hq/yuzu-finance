@@ -58,6 +58,12 @@ const Chart = (props: ChartProps): JSX.Element | null => {
       return [djs(time).format(format), close];
     });
 
+    let chartTimePeriod = {
+      MINUTE: "Today",
+      HOUR: "5D",
+      DAY: "1M",
+    }[aggPeriod];
+
     const lastTrade = parseFloat(lastTradePrice);
     const firstTrade = parseFloat(aggregates[0].close);
     const priceDelta = lastTrade - firstTrade;
@@ -100,6 +106,7 @@ const Chart = (props: ChartProps): JSX.Element | null => {
               {percentChange > 0 && "+"}
               {priceDelta.toFixed(2)}
             </p>
+            <p className="font-semibold">{chartTimePeriod}</p>
           </div>
           {lastTradeTime && (
             <p className="text-gray-500 text-sm mb-2">{djs(lastTradeTime).format("MMM D, YYYY h:mm A")}</p>

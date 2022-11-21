@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { SearchIcon } from "@heroicons/react/outline";
 
 import cx from "classnames";
 import { useEffect, useState } from "react";
@@ -54,16 +55,17 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
     <div className="w-content relative">
       <div
         className={cx(
-          "transition bg-white border-slate-200 p-4 hover:cursor-pointer shadow hover:shadow-lg focus-within:shadow-lg overflow-hidden",
+          "transition flex flex-row gap-2 bg-white border-slate-200 p-4 hover:cursor-pointer shadow hover:shadow-lg focus-within:shadow-lg overflow-hidden",
           {
             "rounded-t-3xl border-r border-t border-l": query.length > 2 || hasResults,
             "border rounded-full": query.length < 2 && !hasResults,
           }
         )}
       >
+        <SearchIcon className="w-6 hover:cursor-default" />
         <input
           className="w-full"
-          placeholder="Search"
+          placeholder="Search for stocks, ETFs & more"
           onFocus={(): void => setActive(true)}
           value={query}
           onChange={(e): void => setQuery(e.target.value)}
