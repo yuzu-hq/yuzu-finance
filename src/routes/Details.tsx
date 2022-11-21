@@ -1,5 +1,7 @@
 import { useQuery } from "@apollo/client";
+import { ArrowSmDownIcon, ArrowSmUpIcon, PlusSmIcon } from "@heroicons/react/outline";
 
+import cx from "classnames";
 import djs from "dayjs";
 import { useState } from "react";
 // @ts-ignore: no types 😱
@@ -7,7 +9,7 @@ import { AreaChart } from "react-chartkick";
 import { useParams } from "react-router-dom";
 
 import { TimePeriodFilter } from "../components";
-import { crypto, forex, usEquities } from "../queries";
+import { crypto, forex, usEquities, usMarketHours } from "../queries";
 import {
   CryptoAggregatePeriod,
   CryptoQueryQuery,
@@ -17,6 +19,8 @@ import {
   SecuritiesQueryQuery,
   SecuritiesQueryQueryVariables,
   SecurityAggregatePeriod,
+  UsMarketHoursQuery,
+  UsMarketHoursQueryVariables,
 } from "../types";
 import { currencyFormat } from "../utilities";
 import "chartkick/chart.js";
@@ -28,9 +32,11 @@ type ChartProps = {
   aggPeriod: AggPeriod;
   data: {
     name: string;
+    symbol?: string;
     lastTradePrice: string;
     lastTradeTime: string | null;
     aggregates: { time: string; close: string }[];
+    newsArticles?: SecuritiesQueryQuery["securities"][number]["newsArticles"];
   } | null;
 };
 
@@ -40,7 +46,7 @@ const Chart = (props: ChartProps): JSX.Element | null => {
   if (loading && !data) {
     return <div>Loading...</div>;
   } else if (data) {
-    const { name, lastTradeTime, lastTradePrice, aggregates } = data;
+    const { name, symbol, lastTradeTime, lastTradePrice, aggregates, newsArticles } = data;
 
     const chart = aggregates.map(({ time, close }) => {
       let format = {
@@ -52,13 +58,56 @@ const Chart = (props: ChartProps): JSX.Element | null => {
       return [djs(time).format(format), close];
     });
 
+    let chartTimePeriod = {
+      MINUTE: "Today",
+      HOUR: "5D",
+      DAY: "1M",
+    }[aggPeriod];
+
+    const lastTrade = parseFloat(lastTradePrice);
+    const firstTrade = parseFloat(aggregates[0].close);
+    const priceDelta = lastTrade - firstTrade;
+    const percentChange = priceDelta / firstTrade;
+
+    const chartColor = percentChange > 0 ? "#059669" : "#dc2626";
+
     return (
       <main>
         <div className="flex flex-b justify-between grow mx-auto w-full pb-2 border-b-2 items-center">
           <div className="flex gap-x-2 justify-between">{name}</div>
+          <div className="items-center flex">
+            <button className="px-4 py-2 inline-flex items-center gap-2 font-semibold text-sm bg-white border-2 border-gray-200 rounded-full shadow-sm">
+              <PlusSmIcon className="text-blue-500 w-4 h-4" />
+              <span className="text-black">Follow</span>
+            </button>
+          </div>
         </div>
         <div className="mt-4">
-          <h3 className="text-4xl	mb-2">{currencyFormat.format(parseFloat(lastTradePrice))}</h3>
+          <div
+            className={cx("flex items-center gap-2", {
+              "text-emerald-600": percentChange > 0,
+              "text-red-600": percentChange < 0,
+            })}
+          >
+            <h3 className="text-4xl text-black mb-2">{currencyFormat.format(parseFloat(lastTradePrice))}</h3>
+            <div
+              className={cx("px-1 flex flex-row text-sm font-semibold rounded items-center", {
+                "bg-emerald-100 text-emerald-600": percentChange > 0,
+                "bg-red-100 text-red-600": percentChange < 0,
+              })}
+            >
+              <span className="inline-flex items-center flex-row h-8 aspect-square">
+                {percentChange < 0 && <ArrowSmDownIcon className="text-red-600" />}
+                {percentChange > 0 && <ArrowSmUpIcon className="text-emerald-600" />}
+              </span>
+              <p>{(percentChange * 100).toFixed(2)}%</p>
+            </div>
+            <p>
+              {percentChange > 0 && "+"}
+              {priceDelta.toFixed(2)}
+            </p>
+            <p className="font-semibold">{chartTimePeriod}</p>
+          </div>
           {lastTradeTime && (
             <p className="text-gray-500 text-sm mb-2">{djs(lastTradeTime).format("MMM D, YYYY h:mm A")}</p>
           )}
@@ -66,6 +115,7 @@ const Chart = (props: ChartProps): JSX.Element | null => {
             <TimePeriodFilter onPeriodChange={onPeriodChange} aggPeriod={aggPeriod} />
           </div>
           <AreaChart
+            colors={[chartColor]}
             data={chart}
             discrete={true}
             prefix="$"
@@ -76,12 +126,56 @@ const Chart = (props: ChartProps): JSX.Element | null => {
             max={null}
           />
         </div>
+        {newsArticles && (
+          <div className="my-5 w-7/12">
+            <h3 className="mb-5 font-semibold">News about {symbol}</h3>
+            <div className="flex flex-row overflow-x-scroll gap-2">
+              {newsArticles.map((newsArticle) => {
+                return (
+                  <a href={newsArticle.url} target="_blank">
+                    <div className="flex flex-col gap-2 h-72 w-64 rounded border-2 border-gray-300 hover:bg-gray-200 hover:cursor-pointer">
+                      {newsArticle.imageUrl && <img src={newsArticle.imageUrl} />}
+                      <div className="p-2 flex flex-col gap-3 text-xs">
+                        <span className="text-gray-500 font-semibold">{newsArticle.publisher}</span>
+                        <span className="text-black text-clip">{newsArticle.title}</span>
+                        <span className="text-gray-500">{djs(newsArticle.time).format("MMM D, YYYY h:mm A")}</span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </main>
     );
   }
 
   return null;
 };
+
+// Return berfore and after matching nextTradingDay if the market is operations
+//
+// if it's closed, then retrun previousDay
+function currentMarketHours(data: UsMarketHoursQuery | undefined): { before: string; after: string } | undefined {
+  if (!data) {
+    return undefined;
+  }
+
+  const { openNow, nextTradingDay, previousTradingDay } = data.usMarketHours;
+
+  if (openNow) {
+    return {
+      before: nextTradingDay.closeTime,
+      after: nextTradingDay.openTime,
+    };
+  } else {
+    return {
+      before: previousTradingDay.closeTime,
+      after: previousTradingDay.openTime,
+    };
+  }
+}
 
 export default function Details(): JSX.Element {
   let params = useParams();
@@ -96,16 +190,20 @@ export default function Details(): JSX.Element {
     DAY: 30,
   }[aggPeriod];
 
+  const { data: usMarketHoursData } = useQuery<UsMarketHoursQuery, UsMarketHoursQueryVariables>(usMarketHours);
+  const beforeAndAfter = aggPeriod === "MINUTE" ? currentMarketHours(usMarketHoursData) : undefined;
+
   const { loading: securitiesLoading, data: securitiesPayload } = useQuery<
     SecuritiesQueryQuery,
     SecuritiesQueryQueryVariables
   >(usEquities, {
-    skip: streamType !== "S",
+    skip: streamType !== "S" && usMarketHoursData === undefined,
     variables: {
       input: { symbols: [equitySymbol] },
       aggregatesInput: {
         period: aggPeriod as SecurityAggregatePeriod,
         limit: aggLimit,
+        ...beforeAndAfter,
       },
     },
   });
@@ -141,9 +239,11 @@ export default function Details(): JSX.Element {
           data={
             (securitiesPayload && {
               name: securitiesPayload.securities[0].name,
+              symbol: securitiesPayload.securities[0].symbol,
               lastTradePrice: securitiesPayload.securities[0].lastTrade?.price,
               lastTradeTime: securitiesPayload.securities[0].lastTrade?.time,
               aggregates: securitiesPayload.securities[0].aggregates,
+              newsArticles: securitiesPayload.securities[0].newsArticles,
             }) ||
             null
           }

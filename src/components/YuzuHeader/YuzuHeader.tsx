@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const YuzuHeader = (): JSX.Element => {
   return (
-    <div className="navigation flex-shrink fixed w-full">
+    <div className="navigation flex-shrink fixed w-full bg-white">
       <nav>
         <Link to="/">
           <h2>

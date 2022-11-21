@@ -56,7 +56,7 @@ const MarketHeader = (): JSX.Element => {
   });
 
   return (
-    <div className="w-full p-6 gap-y-4 flex flex-col">
+    <div className="w-full p-6 gap-y-4 overflow-x-scroll flex flex-col">
       <div className="flex flex-row items-center gap-x-3">
         <h3 className="font-semibold">At a glance:</h3>
         {buttons.map((button) => (
@@ -71,7 +71,7 @@ const MarketHeader = (): JSX.Element => {
           />
         ))}
       </div>
-      <div className="flex w-full flex-row gap-x-3">
+      <div className="flex w-full overflow-x-scroll flex-row gap-x-3">
         {glLoading && (
           <>
             {new Array(4).fill(null).map((_, i) => (

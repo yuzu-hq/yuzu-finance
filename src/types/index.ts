@@ -901,7 +901,12 @@ export type SearchQueryQueryVariables = Exact<{
 }>;
 
 
-export type SearchQueryQuery = { __typename?: 'Query', cryptoTradingPairs: Array<{ __typename?: 'CryptoTradingPair', id: string, symbol: string, aggregates: Array<{ __typename?: 'CryptoAggregate', time: any, close: any }>, baseAsset: { __typename?: 'CryptoAsset', name: string, symbol: string } }>, securities: Array<{ __typename?: 'Security', symbol: string, name: string, aggregates: Array<{ __typename?: 'SecurityAggregate', close: any }> }> };
+export type SearchQueryQuery = { __typename?: 'Query', securities: Array<{ __typename?: 'Security', symbol: string, name: string, aggregates: Array<{ __typename?: 'SecurityAggregate', close: any }> }> };
+
+export type MarketNewsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarketNewsQuery = { __typename?: 'Query', marketNews: Array<{ __typename?: 'NewsArticle', title: string, url: string, time: any, publisher: string, imageUrl?: string | null, subjects: Array<{ __typename?: 'Security', symbol: string }> }> };
 
 export type SecuritiesQueryQueryVariables = Exact<{
   input?: InputMaybe<SecurityFilterInput>;
@@ -909,7 +914,7 @@ export type SecuritiesQueryQueryVariables = Exact<{
 }>;
 
 
-export type SecuritiesQueryQuery = { __typename?: 'Query', securities: Array<{ __typename?: 'Security', id: string, symbol: string, name: string, issuer?: { __typename?: 'Company', name: string } | null, lastTrade?: { __typename?: 'Trade', price: any, time: any } | null, aggregates: Array<{ __typename?: 'SecurityAggregate', time: any, close: any }> }> };
+export type SecuritiesQueryQuery = { __typename?: 'Query', securities: Array<{ __typename?: 'Security', id: string, symbol: string, name: string, issuer?: { __typename?: 'Company', name: string } | null, lastTrade?: { __typename?: 'Trade', price: any, time: any } | null, aggregates: Array<{ __typename?: 'SecurityAggregate', time: any, close: any }>, newsArticles: Array<{ __typename?: 'NewsArticle', title: string, url: string, time: any, publisher: string, imageUrl?: string | null }> }> };
 
 export type CryptoQueryQueryVariables = Exact<{
   input?: InputMaybe<CryptoTradingPairFilterInput>;
@@ -926,6 +931,11 @@ export type ForexQueryQueryVariables = Exact<{
 
 
 export type ForexQueryQuery = { __typename?: 'Query', forexTradingPairs: Array<{ __typename?: 'ForexTradingPair', id: string, symbol: string, currentRate: any, aggregates: Array<{ __typename?: 'ForexAggregate', time: any, close: any }> }> };
+
+export type UsMarketHoursQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsMarketHoursQuery = { __typename?: 'Query', usMarketHours: { __typename?: 'UsMarketHours', openNow: boolean, previousTradingDay: { __typename?: 'TradingDay', openTime: any, closeTime: any }, nextTradingDay: { __typename?: 'TradingDay', openTime: any, closeTime: any } } };
 
 export type AtAGlanceQueryQueryVariables = Exact<{
   sec?: InputMaybe<SecurityFilterInput>;
